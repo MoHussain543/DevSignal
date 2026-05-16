@@ -1,0 +1,40 @@
+package com.devsignal.dto.analysis;
+
+import java.util.List;
+
+public record AnalysisResponseDto(
+		String username,
+		String name,
+		String avatarUrl,
+		String bio,
+		int publicRepos,
+		int followers,
+		int analyzedRepoCount,
+		int totalFetchedRepoCount,
+		int ignoredRepoCount,
+		int originalRepoCount,
+		int forkedRepoCount,
+		int portfolioRepoCount,
+		long portfolioTotalStars,
+		long portfolioTotalForks,
+		int portfolioAverageRepoScore,
+		List<String> portfolioTopLanguages,
+		String candidateLevel,
+		String hiringRecommendation,
+		String scoreExplanation,
+		String projectQualityExplanation,
+		String technicalBreadthExplanation,
+		String documentationExplanation,
+		String originalityExplanation,
+		String activityExplanation,
+		ScoreBreakdownDto scoreBreakdown,
+		WeightedScoreBreakdownDto weightedScoreBreakdown,
+		List<String> technicalHighlights,
+		List<String> growthAreas,
+		List<RepoAnalysisDto> repos,
+		RepoAnalysisDto featuredRepo,
+		String featuredRepoReason,
+		List<String> strengths,
+		List<String> weaknesses,
+		int score
+) {}
