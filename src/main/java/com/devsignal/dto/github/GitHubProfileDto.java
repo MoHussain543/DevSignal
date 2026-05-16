@@ -1,4 +1,4 @@
-package com.devsignal.DevSignal.dto.github;
+package com.devsignal.dto.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

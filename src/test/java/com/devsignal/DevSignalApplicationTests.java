@@ -1,4 +1,4 @@
-package com.devsignal.DevSignal;
+package com.devsignal;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

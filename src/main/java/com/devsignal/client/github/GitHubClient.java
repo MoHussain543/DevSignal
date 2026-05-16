@@ -1,4 +1,4 @@
-package com.devsignal.DevSignal.client.github;
+package com.devsignal.client.github;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 
-import com.devsignal.DevSignal.dto.github.GitHubProfileDto;
-import com.devsignal.DevSignal.dto.github.GitHubRepoDto;
+import com.devsignal.dto.github.GitHubProfileDto;
+import com.devsignal.dto.github.GitHubRepoDto;
 
 @Component
 public class GitHubClient {

@@ -1,4 +1,4 @@
-package com.devsignal.DevSignal.dto.analysis;
+package com.devsignal.dto.analysis;
 
 import java.util.List;
 

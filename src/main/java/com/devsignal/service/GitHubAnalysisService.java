@@ -1,4 +1,4 @@
-package com.devsignal.DevSignal.service;
+package com.devsignal.service;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -13,10 +13,10 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.devsignal.DevSignal.client.github.GitHubClient;
-import com.devsignal.DevSignal.dto.analysis.AnalysisResponseDto;
-import com.devsignal.DevSignal.dto.github.GitHubProfileDto;
-import com.devsignal.DevSignal.dto.github.GitHubRepoDto;
+import com.devsignal.client.github.GitHubClient;
+import com.devsignal.dto.analysis.AnalysisResponseDto;
+import com.devsignal.dto.github.GitHubProfileDto;
+import com.devsignal.dto.github.GitHubRepoDto;
 
 @Service
 public class GitHubAnalysisService {
