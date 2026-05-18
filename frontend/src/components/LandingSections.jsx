@@ -1,10 +1,17 @@
 import RevealSection from './RevealSection.jsx'
 import {
   Activity,
+  AlertTriangle,
+  ArrowUpRight,
   BadgeCheck,
   BookOpen,
+  CheckCircle2,
   Code2,
   FolderGit2,
+  ListChecks,
+  Map,
+  Sparkles,
+  Target,
   TrendingUp,
 } from 'lucide-react'
 
@@ -17,14 +24,14 @@ const ANALYZES_FEATURES = [
   },
   {
     icon: Code2,
-    title: 'Technical breadth',
-    desc: 'Programming languages and frameworks that appear across your public repositories.',
+    title: 'Technology variety',
+    desc: 'Programming languages and stacks that show up across your public repositories.',
     tone: 'violet',
   },
   {
     icon: BookOpen,
-    title: 'Documentation',
-    desc: 'Whether README files explain installation, usage, and structure in a helpful way.',
+    title: 'README & documentation',
+    desc: 'Whether README files explain installation, usage, and what the project does.',
     tone: 'violet',
   },
   {
@@ -77,7 +84,7 @@ export default function LandingSections() {
   return (
     <div className="landing-sections landing-sections--preview-offset">
 
-      {/* ── What DevSignal Analyzes — sidebar “Analysis” scroll target before first search ── */}
+      {/* ── What DevSignal Analyzes ── */}
       <RevealSection>
         <section
           id="section-analysis"
@@ -127,6 +134,188 @@ export default function LandingSections() {
                 <p className="hiw-step-desc">{desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── Coming Features divider ── */}
+      <RevealSection>
+        <div className="landing-coming-divider" aria-hidden>
+          <div className="landing-coming-divider-line" />
+          <span className="landing-coming-divider-label">
+            <Sparkles size={11} strokeWidth={1.8} />
+            Coming Features
+          </span>
+          <div className="landing-coming-divider-line" />
+        </div>
+      </RevealSection>
+
+      {/* ── AI Report Summary (Coming Soon preview) ── */}
+      <RevealSection>
+        <section
+          id="section-ai-summary"
+          data-nav-section="ai-summary"
+          className="landing-block"
+          aria-labelledby="landing-ai-heading"
+        >
+          <div className="landing-feature-split">
+
+            {/* Copy column */}
+            <div className="landing-feature-copy">
+              <div className="landing-section-eyebrow">
+                <Sparkles size={12} strokeWidth={1.8} aria-hidden />
+                Coming Soon
+              </div>
+              <h2 id="landing-ai-heading" className="landing-feature-title">
+                AI Report Summary
+              </h2>
+              <p className="landing-feature-sub">
+                Turn raw GitHub signals into a clear, human-readable portfolio review.
+              </p>
+              <ul className="landing-feature-bullets" aria-label="Feature highlights">
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Plain-English profile summary</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Strengths and weaknesses explained clearly</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Hiring-style impression</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Personalized next steps</li>
+              </ul>
+              <button className="btn-outline" disabled aria-disabled="true" aria-label="AI Summary — coming soon">
+                <Sparkles size={14} strokeWidth={1.8} aria-hidden />
+                Coming Soon
+              </button>
+            </div>
+
+            {/* Preview card column */}
+            <div className="landing-preview-card-col">
+              <div className="card card-gradient-edge-sm landing-preview-card">
+
+                <div className="landing-preview-card-header">
+                  <span className="section-icon-slot section-icon-tone-violet" aria-hidden>
+                    <Sparkles size={16} strokeWidth={1.75} />
+                  </span>
+                  <span className="landing-preview-card-name">AI Report Summary</span>
+                  <span className="badge badge-violet">Preview</span>
+                </div>
+
+                <div className="landing-preview-quote">
+                  <span className="landing-preview-quote-label">Overall Impression</span>
+                  <p className="landing-preview-quote-text">
+                    "This profile shows active project work and promising backend signals, but would
+                    be stronger with clearer README files, setup instructions, and more polished
+                    portfolio repositories."
+                  </p>
+                </div>
+
+                <div className="landing-preview-mini-grid">
+                  <div className="landing-preview-mini-item signal-item signal-green">
+                    <CheckCircle2 size={12} strokeWidth={2} aria-hidden /> Main strengths identified
+                  </div>
+                  <div className="landing-preview-mini-item signal-item signal-yellow">
+                    <AlertTriangle size={12} strokeWidth={2} aria-hidden /> Weak spots noted
+                  </div>
+                  <div className="landing-preview-mini-item landing-preview-mini-violet">
+                    <ListChecks size={12} strokeWidth={2} aria-hidden /> What to fix first
+                  </div>
+                  <div className="landing-preview-mini-item landing-preview-mini-violet">
+                    <ArrowUpRight size={12} strokeWidth={2} aria-hidden /> Hiring-style impression
+                  </div>
+                </div>
+
+                <p className="landing-preview-card-note">Sample output — not real data</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── Improvement Roadmap (Coming Soon preview) ── */}
+      <RevealSection>
+        <section
+          id="section-roadmap"
+          data-nav-section="roadmap"
+          className="landing-block"
+          aria-labelledby="landing-roadmap-heading"
+        >
+          <div className="landing-feature-split landing-feature-split--reverse">
+
+            {/* Preview card column (left on desktop) */}
+            <div className="landing-preview-card-col">
+              <div className="card card-gradient-edge-sm landing-preview-card">
+
+                <div className="landing-preview-card-header">
+                  <span className="section-icon-slot section-icon-tone-mag" aria-hidden>
+                    <Map size={16} strokeWidth={1.75} />
+                  </span>
+                  <span className="landing-preview-card-name">Improvement Roadmap</span>
+                  <span className="badge badge-violet">Preview</span>
+                </div>
+
+                <div className="landing-roadmap-phases">
+
+                  <div className="landing-roadmap-phase">
+                    <div className="landing-roadmap-phase-header">
+                      <Target size={13} strokeWidth={2} aria-hidden />
+                      Quick Wins
+                    </div>
+                    <ul className="landing-roadmap-phase-list">
+                      <li>Add setup instructions to your top repositories</li>
+                      <li>Add screenshots to README files</li>
+                      <li>Write clearer project descriptions</li>
+                    </ul>
+                  </div>
+
+                  <div className="landing-roadmap-phase">
+                    <div className="landing-roadmap-phase-header landing-roadmap-phase-header--impact">
+                      <ArrowUpRight size={13} strokeWidth={2} aria-hidden />
+                      Highest-Impact Fixes
+                    </div>
+                    <ul className="landing-roadmap-phase-list">
+                      <li>Build one original full-stack project</li>
+                      <li>Add tests or deployment notes</li>
+                      <li>Improve documentation for your strongest repo</li>
+                    </ul>
+                  </div>
+
+                  <div className="landing-roadmap-phase">
+                    <div className="landing-roadmap-phase-header landing-roadmap-phase-header--direction">
+                      <Map size={13} strokeWidth={2} aria-hidden />
+                      Next Project Direction
+                    </div>
+                    <ul className="landing-roadmap-phase-list">
+                      <li>Create a backend-heavy project with API, database, authentication, and deployment</li>
+                    </ul>
+                  </div>
+
+                </div>
+
+                <p className="landing-preview-card-note">Sample roadmap — not real data</p>
+              </div>
+            </div>
+
+            {/* Copy column (right on desktop) */}
+            <div className="landing-feature-copy">
+              <div className="landing-section-eyebrow">
+                <Map size={12} strokeWidth={1.8} aria-hidden />
+                Coming Soon
+              </div>
+              <h2 id="landing-roadmap-heading" className="landing-feature-title">
+                Improvement Roadmap
+              </h2>
+              <p className="landing-feature-sub">
+                Know exactly what to improve next to make your GitHub portfolio stronger.
+              </p>
+              <ul className="landing-feature-bullets" aria-label="Feature highlights">
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Prioritized quick wins to do right now</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Highest-impact fixes for your profile</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Next project ideas to fill skill gaps</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Study roadmap tailored to your stack</li>
+              </ul>
+              <button className="btn-outline" disabled aria-disabled="true" aria-label="Improvement Roadmap — coming soon">
+                <ListChecks size={14} strokeWidth={1.8} aria-hidden />
+                Coming Soon
+              </button>
+            </div>
+
           </div>
         </section>
       </RevealSection>

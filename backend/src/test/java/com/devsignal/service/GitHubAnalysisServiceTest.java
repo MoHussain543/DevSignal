@@ -396,7 +396,7 @@ class GitHubAnalysisServiceTest {
 	}
 
 	@Test
-	void technicalHighlightsUseAnalyzedSampleWording() {
+	void technicalHighlightsUsePlainLanguage() {
 		Instant now = Instant.now();
 		GitHubProfileDto profile = new GitHubProfileDto("wording", "Wording", null, null, 5, 0, 5);
 		List<GitHubRepoDto> repos = List.of(
@@ -408,8 +408,8 @@ class GitHubAnalysisServiceTest {
 						now.minus(30, ChronoUnit.DAYS), now.minus(1, ChronoUnit.DAYS), false));
 		AnalysisResponseDto response =
 				new GitHubAnalysisService(new StubGitHubClient(profile, repos)).analyze("wording");
-		assertTrue(response.technicalHighlights().stream().anyMatch(s -> s.contains("analyzed")));
-		assertTrue(response.strengths().stream().anyMatch(s -> s.contains("analyzed")));
+		assertTrue(response.technicalHighlights().stream().anyMatch(s -> s.contains("portfolio") || s.contains("reviewed")));
+		assertTrue(response.strengths().stream().anyMatch(s -> s.contains("portfolio") || s.contains("reviewed")));
 	}
 
 	private static class StubGitHubClient extends GitHubClient {

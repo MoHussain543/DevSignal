@@ -38,10 +38,10 @@ function CandidateBadge({ level }) {
         ? 'developing'
         : 'early'
   const cls = {
-    'Strong candidate': 'badge-green',
-    'Promising candidate': 'badge-violet',
-    'Developing candidate': 'badge-yellow',
-    'Early portfolio': 'badge-orange',
+    'Strong portfolio signal': 'badge-green',
+    'Promising portfolio signal': 'badge-violet',
+    'Developing portfolio': 'badge-yellow',
+    'Early-stage portfolio': 'badge-orange',
   }[level] || 'badge-gray'
 
   return (
@@ -98,7 +98,7 @@ export default function AnalysisReport({ data }) {
   return (
     <div className="report">
 
-      {/* Analysis stack: profile → score → evaluation → weighted breakdown */}
+      {/* Analysis stack: profile → overall score → summary → breakdown */}
       <section id="section-analysis" data-nav-section="analysis" className="report-section-anchor">
         <div className="report-analysis-suite">
           <RevealSection>
@@ -132,7 +132,7 @@ export default function AnalysisReport({ data }) {
           <RevealSection delay={40}>
             <div className="card-row report-analysis-feature-row">
               <div className="card score-card card-gradient-edge score-card--featured">
-                <SectionHeading title="Hiring signal" icon={Radar} tone="violet" titleClassName="card-title--lead" />
+                <SectionHeading title="Overall Score" icon={Radar} tone="violet" titleClassName="card-title--lead" />
                 <ScoreRing score={score} />
                 <div className="score-meta">
                   <CandidateBadge level={candidateLevel} />
@@ -143,12 +143,12 @@ export default function AnalysisReport({ data }) {
               <div className="card card--quiet">
                 <SectionHeading title="Portfolio metrics" icon={Activity} tone="violet" />
                 <div className="portfolio-stats">
-                  <Stat label="Repos analyzed" value={analyzedRepoCount} />
+                  <Stat label="Repos reviewed" value={analyzedRepoCount} />
                   <Stat label="Original repos" value={originalRepoCount} />
                   <Stat label="Portfolio repos" value={portfolioRepoCount} />
                   <Stat label="Total stars" value={portfolioTotalStars} />
                   <Stat label="Total forks" value={portfolioTotalForks} />
-                  <Stat label="Avg composite repo score" value={portfolioAverageRepoScore} suffix="/100" />
+                  <Stat label="Average repo quality" value={portfolioAverageRepoScore} suffix="/100" />
                 </div>
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function AnalysisReport({ data }) {
 
           <RevealSection delay={30}>
             <div className="card evaluation-summary-card evaluation-summary-card--editorial">
-              <SectionHeading icon={BarChart3} tone="violet" title="Reading this profile" titleClassName="card-title--lead" />
+              <SectionHeading icon={BarChart3} tone="violet" title="Profile Summary" titleClassName="card-title--lead" />
               <p className="evaluation-summary-lead">{scoreExplanation}</p>
               <div className="evaluation-mini-grid">
               <div className="evaluation-mini-card">
@@ -164,19 +164,19 @@ export default function AnalysisReport({ data }) {
                 <p className="evaluation-mini-body">{projectQualityExplanation}</p>
               </div>
               <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Technical breadth</div>
+                <div className="evaluation-mini-label">Technology variety</div>
                 <p className="evaluation-mini-body">{technicalBreadthExplanation}</p>
               </div>
               <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Documentation</div>
+                <div className="evaluation-mini-label">README & documentation</div>
                 <p className="evaluation-mini-body">{documentationExplanation}</p>
               </div>
               <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Originality</div>
+                <div className="evaluation-mini-label">Original project work</div>
                 <p className="evaluation-mini-body">{originalityExplanation}</p>
               </div>
               <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Activity</div>
+                <div className="evaluation-mini-label">Recent activity</div>
                 <p className="evaluation-mini-body">{activityExplanation}</p>
               </div>
             </div>
@@ -186,18 +186,24 @@ export default function AnalysisReport({ data }) {
           <RevealSection delay={50}>
             <div className="card-row report-breakdown-row">
               <div className="card card--stat">
-                <SectionHeading icon={BarChart3} tone="violet" title="Signal mix (normalized)" />
+                <SectionHeading icon={BarChart3} tone="violet" title="How Your Score Is Built" />
+                <p className="text-muted breakdown-panel-hint">
+                  Each category is scored out of 100. This shows where the profile is strong or soft before those scores turn into points.
+                </p>
                 <div className="breakdown">
                   <ProgressBar label="Project quality" value={scoreBreakdown.projectQualityScore} />
-                  <ProgressBar label="Technical breadth" value={scoreBreakdown.technicalBreadthScore} />
-                  <ProgressBar label="Activity" value={scoreBreakdown.activityScore} />
-                  <ProgressBar label="Documentation" value={scoreBreakdown.documentationScore} />
-                  <ProgressBar label="Originality" value={scoreBreakdown.originalityScore} />
+                  <ProgressBar label="Technology variety" value={scoreBreakdown.technicalBreadthScore} />
+                  <ProgressBar label="Recent activity" value={scoreBreakdown.activityScore} />
+                  <ProgressBar label="README & documentation" value={scoreBreakdown.documentationScore} />
+                  <ProgressBar label="Original project work" value={scoreBreakdown.originalityScore} />
                 </div>
               </div>
 
               <div className="card card--stat">
-                <SectionHeading icon={TrendingUp} tone="violet" title="Weighted points" />
+                <SectionHeading icon={TrendingUp} tone="violet" title="Points Earned" />
+                <p className="text-muted breakdown-panel-hint">
+                  Each category contributes a different slice to your final score (shown on the left as overall score).
+                </p>
                 <div className="breakdown">
                   <ProgressBar
                     label="Project quality"
@@ -207,28 +213,28 @@ export default function AnalysisReport({ data }) {
                     color="var(--accent-primary)"
                   />
                   <ProgressBar
-                    label="Technical breadth"
+                    label="Technology variety"
                     value={weightedScoreBreakdown.technicalBreadthPoints}
                     max={20}
                     weighted
                     color="var(--accent-primary)"
                   />
                   <ProgressBar
-                    label="Documentation"
+                    label="README & documentation"
                     value={weightedScoreBreakdown.documentationPoints}
                     max={20}
                     weighted
                     color="var(--accent-primary)"
                   />
                   <ProgressBar
-                    label="Originality"
+                    label="Original project work"
                     value={weightedScoreBreakdown.originalityPoints}
                     max={20}
                     weighted
                     color="var(--accent-primary)"
                   />
                   <ProgressBar
-                    label="Activity"
+                    label="Recent activity"
                     value={weightedScoreBreakdown.activityPoints}
                     max={10}
                     weighted
@@ -236,7 +242,7 @@ export default function AnalysisReport({ data }) {
                   />
                 </div>
                 <div className="weighted-total">
-                  Total score: <strong>{weightedScoreBreakdown.totalPoints}</strong>/100
+                  Final score: <strong>{weightedScoreBreakdown.totalPoints}</strong>/100
                 </div>
               </div>
             </div>
@@ -251,12 +257,12 @@ export default function AnalysisReport({ data }) {
             <SectionHeading
               icon={FolderGit2}
               tone="violet"
-              title="Repositories"
+              title="Repositories Reviewed"
               titleClassName="card-title--lead"
             />
             {spotlightRepo ? (
               <div className="repo-feature-frame">
-                <p className="repo-feature-kicker">Strongest signal</p>
+                <p className="repo-feature-kicker">Best Portfolio Repo</p>
                 {featuredRepoReason ? (
                   <p className="repo-feature-reason">{featuredRepoReason}</p>
                 ) : null}
@@ -285,29 +291,29 @@ export default function AnalysisReport({ data }) {
       <section id="section-insights" className="report-section-anchor">
         <RevealSection delay={40}>
           <div className="card insights-duo-card">
-            <SectionHeading icon={Radar} tone="violet" title="Signals & gaps" titleClassName="card-title--lead" />
+            <SectionHeading icon={Radar} tone="violet" title="Strengths & Areas to Improve" titleClassName="card-title--lead" />
             <div className="insights-duo-grid">
               <div className="insights-duo-col">
-                <p className="insights-col-label">Technical highlights</p>
+                <p className="insights-col-label">What Looks Strong</p>
                 <ul className="signal-list">
                   {technicalHighlights.length > 0 ? (
                     technicalHighlights.map((h, i) => (
                       <li key={i} className="signal-item signal-item--positive">{h}</li>
                     ))
                   ) : (
-                    <li className="signal-item signal-muted">No highlights detected</li>
+                    <li className="signal-item signal-muted">Nothing stood out in this pass—check the suggestions on the right.</li>
                   )}
                 </ul>
               </div>
               <div className="insights-duo-col insights-duo-col--rule">
-                <p className="insights-col-label">Growth areas</p>
+                <p className="insights-col-label">What To Improve</p>
                 <ul className="signal-list">
                   {growthAreas.length > 0 ? (
                     growthAreas.map((a, i) => (
                       <li key={i} className="signal-item signal-item--watch">{a}</li>
                     ))
                   ) : (
-                    <li className="signal-item signal-muted">None identified</li>
+                    <li className="signal-item signal-muted">No major gaps flagged—nice work.</li>
                   )}
                 </ul>
               </div>

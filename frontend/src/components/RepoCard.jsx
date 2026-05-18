@@ -9,13 +9,13 @@ import {
 } from 'lucide-react'
 
 const QUALITY_BADGE = {
-  'Strong portfolio project signal': 'badge-green',
-  'Promising project': 'badge-violet',
-  'Basic project signal': 'badge-yellow',
-  'Forked repository': 'badge-gray',
-  'Likely demo/sample repository': 'badge-orange',
-  'Active project but missing documentation': 'badge-yellow',
-  'Needs stronger project signals': 'badge-red',
+  'Strong portfolio repo': 'badge-green',
+  'Solid project': 'badge-violet',
+  'Basic project': 'badge-yellow',
+  Fork: 'badge-gray',
+  'Looks like a demo or sample': 'badge-orange',
+  'Active, but README is thin': 'badge-yellow',
+  'Room to strengthen this repo': 'badge-red',
 }
 
 function repoScoreColor(s) {
@@ -87,7 +87,10 @@ export default function RepoCard({ repo }) {
       </div>
 
       <div className="repo-score-row">
-        <span className="repo-score-label" title="Blends GitHub-visible signals plus part of your README rubric; the Documentation section averages README separately for the portfolio.">
+        <span
+          className="repo-score-label"
+          title="Blends what’s visible on GitHub (metadata) with part of our README checklist. The README & documentation section averages README quality across your portfolio."
+        >
           Score
         </span>
         <div className="repo-score-track repo-score-track-strong">
@@ -97,15 +100,15 @@ export default function RepoCard({ repo }) {
           />
         </div>
         <span className="repo-score-val" style={{ color: scoreCol }}>{repoScore}</span>
-        <span className="repo-meta-score-hint" title="Metadata-only subscore (used for the project-quality pillar average)">
-          · meta {repoMetadataScore}
+        <span className="repo-meta-score-hint" title="Quality from GitHub metadata only (used in the project-quality part of your overall score).">
+          · metadata {repoMetadataScore}
         </span>
       </div>
 
       <div className="readme-section">
         <div className="readme-header readme-header-icons">
           <BookOpen aria-hidden strokeWidth={1.7} size={13} stroke="var(--accent-secondary)" />{' '}
-          <span className="readme-label">README</span>
+          <span className="readme-label">README & docs</span>
           {r.hasReadme ? (
             <span className="badge badge-green"><CheckCircle2 aria-hidden strokeWidth={1.7} size={12} /> Present</span>
           ) : (

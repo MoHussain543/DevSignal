@@ -143,42 +143,42 @@ public class GitHubAnalysisService {
 
 		if (allReposAreForks) {
 			weaknesses.add(
-					"Original project signals are limited among fetched repositories — every analyzed repository appears to be a fork");
+					"Every repo we reviewed looks like a fork, so there is little original portfolio work to score yet.");
 		}
 
 		if (portfolioRepos.isEmpty()) {
-			weaknesses.add("No strong original portfolio repositories detected in the analyzed sample");
+			weaknesses.add("We did not find portfolio-style repos in what we reviewed (original work that is not mostly a demo or fork).");
 		}
 		else {
 			if (repoCountStrength) {
-				strengths.add("Multiple qualifying portfolio repositories in the analyzed sample");
+				strengths.add("You have several portfolio repos in the set we reviewed.");
 			}
 			else {
-				weaknesses.add("Fewer than three qualifying original repositories in the analyzed portfolio sample");
+				weaknesses.add("Fewer than three portfolio repos showed up—adding more original projects would help.");
 			}
 			if (starsStrength) {
-				strengths.add("At least one analyzed repository has stars");
+				strengths.add("At least one reviewed repo has stars.");
 			}
 			else {
-				weaknesses.add("Portfolio repositories in the analyzed sample have no stars yet");
+				weaknesses.add("Your portfolio repos do not have stars yet—that is normal early on.");
 			}
 			if (languagesStrength) {
-				strengths.add("Uses several programming languages across analyzed portfolio repositories");
+				strengths.add("Your portfolio shows work across several languages.");
 			}
 			else {
-				weaknesses.add("Limited language variety among analyzed portfolio repositories");
+				weaknesses.add("Most of the reviewed work is concentrated in one or two languages—more variety would help.");
 			}
 			if (descriptionStrength) {
-				strengths.add("Most qualifying analyzed repositories include strong descriptions");
+				strengths.add("Some of your strongest repos have clear descriptions.");
 			}
 			else {
-				weaknesses.add("Many analyzed repositories are missing strong descriptions");
+				weaknesses.add("Several repos need clearer descriptions.");
 			}
 			if (recentActivityStrength) {
-				strengths.add("Most qualifying analyzed portfolio repositories were updated recently");
+				strengths.add("At least one portfolio repo was updated recently.");
 			}
 			else {
-				weaknesses.add("No qualifying repositories in the analyzed sample were updated in the last 6 months");
+				weaknesses.add("No portfolio repos were updated in the last six months—consider a small refresh.");
 			}
 		}
 
@@ -392,8 +392,8 @@ public class GitHubAnalysisService {
 			return new FeaturedSelection(null, null);
 		}
 		String reason =
-				"Highest readiness score among analyzed original, non-demo portfolio repositories; "
-						+ "tie-breaks favor README depth signals, recent updates, then star count.";
+				"Highest overall quality among your original, non-demo portfolio repos. "
+						+ "If scores tie, we favor stronger READMEs, more recent updates, then star count.";
 		return new FeaturedSelection(pick, reason);
 	}
 
@@ -406,28 +406,28 @@ public class GitHubAnalysisService {
 
 	private static String resolveCandidateLevel(int score) {
 		if (score >= 85) {
-			return "Strong candidate";
+			return "Strong portfolio signal";
 		}
 		if (score >= 70) {
-			return "Promising candidate";
+			return "Promising portfolio signal";
 		}
 		if (score >= 50) {
-			return "Developing candidate";
+			return "Developing portfolio";
 		}
-		return "Early portfolio";
+		return "Early-stage portfolio";
 	}
 
 	private static String resolveHiringRecommendation(int score) {
 		if (score >= 85) {
-			return "Strong GitHub portfolio signal";
+			return "This reads like a strong GitHub portfolio overall.";
 		}
 		if (score >= 70) {
-			return "Promising signal with some areas to improve";
+			return "Solid portfolio with a few areas to polish.";
 		}
 		if (score >= 50) {
-			return "Some useful signals, but needs stronger project depth";
+			return "Some good building blocks—depth and documentation can go further.";
 		}
-		return "Needs stronger original projects before being hiring-ready";
+		return "Early-stage portfolio—keep shipping original work.";
 	}
 
 	private static List<String> buildTechnicalHighlights(
@@ -438,19 +438,19 @@ public class GitHubAnalysisService {
 			boolean descriptionStrength) {
 		List<String> highlights = new ArrayList<>();
 		if (repoCountStrength) {
-			highlights.add("Analyzed sample includes multiple qualifying original portfolio repositories");
+			highlights.add("You have multiple portfolio repos in the set we reviewed.");
 		}
 		if (recentActivityStrength) {
-			highlights.add("Most qualifying analyzed portfolio repositories were updated recently");
+			highlights.add("Most portfolio repos were updated recently.");
 		}
 		if (starsStrength) {
-			highlights.add("At least one analyzed repository has stars");
+			highlights.add("At least one reviewed repo has stars.");
 		}
 		if (languagesStrength) {
-			highlights.add("Multiple languages appear across analyzed portfolio repositories");
+			highlights.add("Your portfolio shows work across multiple technologies.");
 		}
 		if (descriptionStrength) {
-			highlights.add("Most qualifying analyzed repositories include strong descriptions");
+			highlights.add("Some of your strongest repos have clear descriptions.");
 		}
 		return highlights;
 	}
@@ -465,30 +465,30 @@ public class GitHubAnalysisService {
 			ScoreBreakdownDto scoreBreakdown) {
 		List<String> areas = new ArrayList<>();
 		if (portfolioEmpty || allReposAreForks) {
-			areas.add("Build more original non-demo projects");
+			areas.add("Build more original, non-demo projects");
 		}
 		else if (!repoCountStrength) {
-			areas.add("Build more original non-demo projects");
+			areas.add("Build more original, non-demo projects");
 		}
 		if (!portfolioEmpty && !descriptionStrength) {
-			areas.add("Improve repository descriptions");
-			areas.add("Add clearer documentation");
+			areas.add("Add clearer descriptions to more repos");
+			areas.add("Add stronger README files with setup and usage instructions");
 		}
 		else if (portfolioEmpty) {
-			areas.add("Improve repository descriptions");
-			areas.add("Add clearer documentation");
+			areas.add("Add clearer descriptions to more repos");
+			areas.add("Add stronger README files with setup and usage instructions");
 		}
 		if (!portfolioEmpty && !languagesStrength) {
-			areas.add("Add more language/technology variety in analyzed portfolio repositories");
+			areas.add("Show more variety in technologies or project types");
 		}
 		else if (portfolioEmpty) {
-			areas.add("Add more language/technology variety");
+			areas.add("Show more variety in technologies or project types");
 		}
 		if (!portfolioEmpty && !recentActivityStrength) {
-			areas.add("Keep analyzed portfolio repositories active");
+			areas.add("Keep more portfolio repos active");
 		}
 		else if (portfolioEmpty) {
-			areas.add("Keep analyzed portfolio repositories active");
+			areas.add("Keep more portfolio repos active");
 		}
 		appendBreakdownGrowthAreas(areas, scoreBreakdown);
 		return areas;
@@ -496,27 +496,25 @@ public class GitHubAnalysisService {
 
 	private static void appendBreakdownStrengths(List<String> strengths, ScoreBreakdownDto breakdown) {
 		if (breakdown.documentationScore() >= 70) {
-			addOnce(strengths, "Strong README/documentation quality across analyzed portfolio repositories");
+			addOnce(strengths, "README and documentation look strong across your portfolio repos.");
 		}
 		if (breakdown.originalityScore() >= 70) {
-			addOnce(strengths, "Strong originality among qualifying repositories in the analyzed sample");
+			addOnce(strengths, "You have original repos that count as real portfolio work.");
 		}
 		if (breakdown.technicalBreadthScore() >= 70) {
-			addOnce(strengths, "Strong detected technical breadth across the analyzed portfolio sample");
+			addOnce(strengths, "Your portfolio shows breadth across languages or stacks.");
 		}
 	}
 
 	private static void appendBreakdownGrowthAreas(List<String> areas, ScoreBreakdownDto breakdown) {
 		if (breakdown.documentationScore() < 40) {
-			addOnce(areas, "Improve README/documentation quality");
+			addOnce(areas, "README files need more setup or usage details");
 		}
 		if (breakdown.originalityScore() < 40) {
-			addOnce(areas, "Build more original non-demo projects");
+			addOnce(areas, "Build more original, non-demo projects");
 		}
 		if (breakdown.technicalBreadthScore() < 40) {
-			addOnce(
-					areas,
-					"Increase detected technical breadth with more languages or stacks among analyzed repositories");
+			addOnce(areas, "Show more variety in technologies or stacks across your repos");
 		}
 	}
 
@@ -533,9 +531,11 @@ public class GitHubAnalysisService {
 	}
 
 	private static final Comparator<RepoAnalysisDto> REPO_DISPLAY_COMPARATOR =
-			Comparator.comparingInt(GitHubAnalysisService::repoDisplayTier)
-					.thenComparing(Comparator.comparingInt(RepoAnalysisDto::repoScore).reversed())
-					.thenComparing(r -> r.name() == null ? "" : r.name(), String.CASE_INSENSITIVE_ORDER);
+			Comparator.<RepoAnalysisDto>comparingInt(GitHubAnalysisService::repoDisplayTier)
+					.thenComparing(Comparator.<RepoAnalysisDto>comparingInt(RepoAnalysisDto::repoScore).reversed())
+					.thenComparing(
+							(RepoAnalysisDto r) -> r.name() == null ? "" : r.name(),
+							String.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * 0 — original non-demo repos (qualifying portfolio), 1 — original demos/samples, 2 — forks lowest.
@@ -565,38 +565,37 @@ public class GitHubAnalysisService {
 		if (portfolioEmpty) {
 			if (allReposAreForks) {
 				sb.append(
-						" because every fetched repository appears to be a fork and ")
-						.append("no qualifying original portfolio repositories were analyzed");
+						" because every repo we reviewed looks like a fork, ")
+						.append("so we could not anchor a portfolio score on original repos");
 			}
 			else {
-				sb.append(" because ")
-						.append("no qualifying original, non-sample portfolio repositories were ")
-						.append("detected among the repositories analyzed");
+				sb.append(
+						" because we did not find original, portfolio-style repos in what we reviewed (often demos or forks sit in that gap)");
 			}
 			return sentenceDot(sb.toString());
 		}
 
 		ArrayList<String> positives = new ArrayList<>();
 		if (recentActivityStrength) {
-			positives.add("it shows recent activity on qualifying portfolio repositories");
+			positives.add("recent pushes show up across your portfolio repos");
 		}
 		if (weighted.projectQualityPoints() >= 20 && portfolioRepoCount >= MIN_PORTFOLIO_REPO_COUNT) {
-			positives.add("project readiness averages strong across analyzed qualifying repositories");
+			positives.add("your strongest repos look polished on the metrics we checked");
 		}
 		else if (portfolioAveragePassesThreshold(portfolioRepoCount, weighted.projectQualityPoints())) {
-			positives.add("the strongest repos pull up averaged portfolio quality signals in the analyzed sample");
+			positives.add("your best repos lift the averages for the repos we sampled");
 		}
 		if (b.documentationScore() >= 60) {
-			positives.add("README-backed documentation averages well among analyzed portfolio repositories");
+			positives.add("README quality looks healthy on average across portfolio repos");
 		}
 		else if (descriptionStrength) {
-			positives.add("some analyzed repositories include solid descriptions");
+			positives.add("several repos have solid short descriptions even when README depth varies");
 		}
 		if (b.technicalBreadthScore() >= 68 && portfolioRepoCount > 0) {
-			positives.add("multiple primary languages surface across analyzed qualifying repositories");
+			positives.add("your portfolio shows work across multiple languages");
 		}
 		if (b.originalityScore() >= 65) {
-			positives.add("most analyzed work skews toward original projects versus forks");
+			positives.add("most of the reviewed originals look like shipped work—not just forks");
 		}
 
 		ArrayList<String> negatives = scoreGapPhrases(b, portfolioRepoCount, recentActivityStrength, descriptionStrength);
@@ -634,11 +633,11 @@ public class GitHubAnalysisService {
 		}
 		else if (!positives.isEmpty()) {
 			sb.append(joinBulletsNatural(positives))
-					.append(" with fewer obvious structural gaps among the analyzed repositories");
+					.append(" with no big structural gaps jumping out among the repos we reviewed");
 		}
 		else {
-			sb.append("the averaged repository signals hover near middling ")
-					.append("without a sharp standout pillar in the analyzed sample");
+			sb.append("the picture is fairly even across repos we reviewed ")
+					.append("without one category clearly running ahead of the others");
 		}
 
 		return sentenceDot(sb.toString());
@@ -662,51 +661,51 @@ public class GitHubAnalysisService {
 		ArrayList<String> phrases = new ArrayList<>();
 		if (portfolioRepoCount < MIN_PORTFOLIO_REPO_COUNT) {
 			if (portfolioRepoCount == 1) {
-				addPhraseIfNew(phrases, "only one qualifying portfolio repository was detected");
+				addPhraseIfNew(phrases, "only one portfolio repo appeared in our review");
 			}
 			else if (portfolioRepoCount == 0) {
-				addPhraseIfNew(phrases, "no qualifying portfolio repositories were detected");
+				addPhraseIfNew(phrases, "no portfolio repos showed up in what we reviewed");
 			}
 			else {
-				addPhraseIfNew(phrases, "fewer than three qualifying portfolio repositories were surfaced");
+				addPhraseIfNew(phrases, "fewer than three portfolio repos were in the sample we opened");
 			}
 		}
 		if (b.projectQualityScore() < 48 && portfolioRepoCount > 0) {
 			addPhraseIfNew(
 					phrases,
-					"overall project quality averages below what hiring teams typically highlight");
+					"overall polish on metadata and completeness trails stronger profiles overall");
 		}
 		if (b.technicalBreadthScore() <= 44) {
 			if (portfolioRepoCount <= 1) {
 				addPhraseIfNew(
 						phrases,
-						"detected technical breadth is limited because qualifying analyzed repos show thin language variety");
+						"most of the reviewed work is concentrated in one language footprint");
 			}
 			else {
 				addPhraseIfNew(
 						phrases,
-						"detected technical breadth stays limited versus candidates with richer language variety in their analyzed sample");
+						"language variety stays narrow versus profiles that show more stacks");
 			}
 		}
 		if (b.documentationScore() <= 42) {
 			addPhraseIfNew(
 					phrases,
-					"documentation is weaker because averaged README signals in the analyzed repos miss setup depth or usage detail");
+					"README files need more setup or usage detail on average across portfolio repos");
 		}
 		else if (!descriptionStrength && b.documentationScore() < 62) {
 			addPhraseIfNew(
 					phrases,
-					"few analyzed repositories pair strong blurbs with deep README scaffolding");
+					"few repos pair crisp descriptions with deep README sections");
 		}
 		if (b.originalityScore() <= 40) {
 			addPhraseIfNew(
 					phrases,
-					"originality dips when many repositories in the analyzed sample resemble forks, demos, or samples");
+					"many repos look like demos, forks, or sample projects—which pulls the originality reading down");
 		}
 		if (b.activityScore() <= 42 && !recentActivityStrength && portfolioRepoCount > 0) {
 			addPhraseIfNew(
 					phrases,
-					"activity is muted—qualifying analyzed repos mostly missed updates in the last six months");
+					"most portfolio repos have been quiet over the past six months");
 		}
 		return phrases;
 	}
@@ -771,17 +770,20 @@ public class GitHubAnalysisService {
 			return "";
 		}
 		String lc = growthAreaLabel.toLowerCase(Locale.ROOT);
-		if (lc.contains("documentation")) {
-			return "documentation can still deepen with richer README sections";
+		if (lc.contains("readme")) {
+			return "README files still need richer setup or usage sections";
 		}
-		if (lc.contains("language")) {
-			return "technology breadth remains narrow across analyzed portfolio repositories";
+		if (lc.contains("description")) {
+			return "short descriptions still need another pass across several repos";
+		}
+		if (lc.contains("technologies") || lc.contains("variety")) {
+			return "technology variety is still narrow across your portfolio repos";
 		}
 		if (lc.contains("active")) {
-			return "recent maintainership on analyzed portfolio repositories remains thin";
+			return "several portfolio repos could use a fresher push";
 		}
 		if (lc.contains("original")) {
-			return "more shipped original projects would raise confidence";
+			return "more shipped original projects would make the narrative clearer";
 		}
 		return "";
 	}
@@ -801,45 +803,45 @@ public class GitHubAnalysisService {
 		if (portfolioRepoCount <= 0) {
 			String forkHint =
 					forkRepoCountInFetch > 0
-							? "The analyzed sample leaned on forks instead of surfaced originals."
+							? "What we fetched leaned heavily on forks, so surfaced originals were thin."
 							: "";
 			String base =
-					"Project quality stays undefined until at least one original, non-sample portfolio repo appears in the analyzed repositories.";
+					"We need at least one original, portfolio-style repo in the repos we reviewed before this score can lift off.";
 			return forkHint.isEmpty() ? sentenceDot(base) : sentenceDot(base + " " + forkHint);
 		}
 		final String readmeSeparationFootnote =
-				" README quality is summarized in the Documentation pillar, not duplicated in this pillar average.";
+				" README depth is summarized under README & documentation, not duplicated in this metric.";
 		if (portfolioRepoCount == 1) {
 			return sentenceDot(
-					"Project quality is limited because only one qualifying portfolio repository was detected in the analyzed sample,"
-							+ " so averages hinge on that single project's metadata readiness (stars, blurbs, activity)."
+					"Only one portfolio repo appeared in what we reviewed, so this score rides entirely on how polished that repo looks "
+							+ "(description, stars, activity, completeness)."
 							+ readmeSeparationFootnote);
 		}
 		String density = portfolioRepoCount < MIN_PORTFOLIO_REPO_COUNT
-				? "Fewer than three qualifying repositories in the analyzed sample keep the breadth bonus modest."
-				: "Several qualifying analyzed repositories help diversify the averaged signal.";
+				? "With fewer than three portfolio repos opened, bonuses for breadth stay modest."
+				: "Having several portfolio repos spreads the averages a bit.";
 		density += readmeSeparationFootnote;
 		if (portfolioAverageRepoScore >= 75) {
 			return sentenceDot(
-					"Portfolio metadata readiness benchmarks high because averaging "
+					"Your strongest repos average about "
 							+ portfolioAverageRepoScore
-							+ "/100 across "
+							+ "/100 on repo quality across "
 							+ portfolioRepoCount
-							+ " qualifying analyzed repositories aligns with repeatable execution. "
+							+ " portfolio repos, which looks consistently cared for. "
 							+ density);
 		}
 		if (portfolioAverageRepoScore >= 55) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Averaged metadata readiness sits near %d/100 across %d analyzed repositories, implying steady but improvable craftsmanship. %s",
+							"Average repo quality sits near %d/100 across %d portfolio repos we reviewed—a steady baseline with room for polish. %s",
 							portfolioAverageRepoScore,
 							portfolioRepoCount,
 							density));
 		}
 		return sentenceDot(
 				String.format(Locale.ROOT,
-						"Averaged metadata readiness lingers closer to %d/100 across %d qualifying analyzed repositories,"
-								+ " so reviewers see uneven polish until descriptions, stars, and activity reinforce the story.",
+						"Average repo quality is closer to %d/100 across %d portfolio repos, "
+								+ "so descriptions, activity, or README touches could help the story land better.",
 						portfolioAverageRepoScore,
 						portfolioRepoCount));
 	}
@@ -850,30 +852,32 @@ public class GitHubAnalysisService {
 			boolean portfolioReposEmpty) {
 		if (portfolioReposEmpty || distinctLangCount <= 0) {
 			return sentenceDot(
-					"Detected technical breadth is muted because qualifying portfolio repositories in the analyzed sample did not surface multiple primary languages.");
+					"We did not see multiple languages show up clearly across your portfolio repos in what we reviewed.");
 		}
 		if (distinctLangCount >= MIN_DISTINCT_LANGUAGES_PORTFOLIO) {
 			String langs = joinLanguageList(topLanguages, MIN_DISTINCT_LANGUAGES_PORTFOLIO);
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Detected technical breadth looks wide with %d distinct languages (%s)"
-									+ " represented across qualifying analyzed portfolio repositories.",
+							"Your portfolio shows work across %d languages (%s)—that reads like healthy variety.",
 							distinctLangCount,
 							langs.isEmpty() ? "several ecosystems" : langs));
 		}
 		String langsTwo = joinLanguageList(topLanguages, 2);
 		if (distinctLangCount == 1) {
+			if (langsTwo.isBlank()) {
+				return sentenceDot(
+						"Most of the reviewed work clusters around one main language—you could add another shipped project to widen variety.");
+			}
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Detected technical breadth is limited because analyzed portfolio repositories largely share one detected primary%s.",
-							langsTwo.isBlank() ? " language"
-									: " language highlighted as ".concat(langsTwo)));
+							"Most of the reviewed work centers on %s—you could add another project to show breadth.",
+							langsTwo));
 		}
 		return sentenceDot(
-					String.format(Locale.ROOT,
-							"Detected technical breadth improves slowly with only two primary languages highlighted (%s),"
-									+ " versus profiles that diversify further in the analyzed sample.",
-							langsTwo.isBlank() ? "limited coverage" : langsTwo));
+				String.format(
+						Locale.ROOT,
+						"Two primary languages surfaced (%s). Adding another focus area alongside them would widen the footprint.",
+						langsTwo.isBlank() ? "limited coverage so far" : langsTwo));
 	}
 
 	private static String buildDocumentationExplanation(
@@ -883,32 +887,31 @@ public class GitHubAnalysisService {
 			long readmeMissingCount) {
 		if (portfolioRepoCount <= 0) {
 			return sentenceDot(
-					"Documentation cannot score until qualifying analyzed repositories exist; forks and demos are skipped for averaged README reads.");
+					"We cannot score READMEs until there are portfolio repos to read; forks and demos are skipped in that average.");
 		}
 		if (readmeMissingCount == portfolioRepoCount) {
 			return sentenceDot(
-					"Documentation reads as weak because READMEs were missing entirely on qualifying analyzed portfolio repositories.");
+					"Several portfolio repos are missing README files entirely, which makes the profile harder to scan quickly.");
 		}
 		if (readmeWeakCount >= Math.max(1, portfolioRepoCount * 3 / 4)) {
 			return sentenceDot(
-					"Documentation is weak because most qualifying analyzed repositories miss README depth, setup scaffolding, or usage walkthroughs.");
+					"Most portfolio READMEs lack setup clarity, concrete usage examples, or enough depth to onboard someone new.");
 		}
 		if (documentationAvgScore >= 70) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Documentation averages a strong README signal (~%d/100)"
-									+ " across qualifying analyzed portfolio repositories with substantive setup or narrative detail.",
+							"README averages are strong (~%d/100) across portfolio repos, with substantive setup or story detail.",
 							documentationAvgScore));
 		}
 		if (documentationAvgScore <= 42) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Documentation trails peers at ~%d/100 averages because summaries rarely pair deep setup or usage detail.",
+							"README averages trail at ~%d/100—invest time in installation and usage sections readers can copy-paste.",
 							documentationAvgScore));
 		}
 		return sentenceDot(
 				String.format(Locale.ROOT,
-						"Documentation sits near ~%d/100 averages, meaning READMEs partially explain architecture but lack polish.",
+						"README quality sits near ~%d/100—they explain basics but could use another editing pass.",
 						documentationAvgScore));
 	}
 
@@ -920,40 +923,38 @@ public class GitHubAnalysisService {
 			int demoRepoCount) {
 		if (originalRepoCount <= 0) {
 			return sentenceDot(
-					"Originality is constrained because fetched repositories all appear forked,"
-							+ " so originality metrics cannot emphasize personal builds.");
+					"We only surfaced forks among the repos we fetched, "
+							+ "so there is not much original project work left to emphasize.");
 		}
 		long nonPortfolioOriginalsApprox = Math.max(0L, analyzedOriginalRepoCount - portfolioRepoCount);
 		if (forkRepoCount + demoRepoCount >= analyzedOriginalRepoCount && portfolioRepoCount <= 2) {
 			return sentenceDot(
-					"Originality is limited because many repositories resemble forks, demos, or curated samples,"
-							+ " leaving fewer surfaced originals trusted as portfolio staples.");
+					"Many repos look like forks, demos, or samples, leaving fewer originals that feel like portfolio centerpieces.");
 		}
 		double coverage = analyzedOriginalRepoCount == 0
 				? 0
 				: (portfolioRepoCount * 100.0) / Math.max(analyzedOriginalRepoCount, 1);
 
-		String tail = demoRepoCount > 0 ? " Sample-style repos still blunt the originality reading." : "";
+		String tail = demoRepoCount > 0 ? " Demo-style repos still pull this reading downward a bit." : "";
 		if (coverage >= 80 && portfolioRepoCount >= MIN_PORTFOLIO_REPO_COUNT) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Originality is solid because %.0f percent of surfaced originals classify as qualifying portfolio repos.%s",
+							"A large share (~%.0f%%) of the originals we opened read as genuine portfolio repos.%s",
 							coverage,
 							tail.isEmpty() ? "" : tail));
 		}
 		String gap = "";
 		if (nonPortfolioOriginalsApprox > 0) {
 			gap = String.format(Locale.ROOT,
-					"%d surfaced originals behave like forks, demos, or otherwise non-qualifying work. ",
+					"%d originals still resemble forks or demos alongside your portfolio staples. ",
 					nonPortfolioOriginalsApprox);
 		}
-		return sentenceDot(
-				String.format(Locale.ROOT,
-						"Originality is mixed once forks and demos are filtered out;"
-								+ " %sit leaves %d qualifying originals that anchor the averaged score.%s",
-						gap,
-						portfolioRepoCount,
-						tail.isBlank() ? "" : tail));
+		String lead = gap.isBlank() ? "" : gap.strip() + " ";
+		return sentenceDot(String.format(Locale.ROOT,
+				"%sThat leaves %d portfolio repos anchoring how original work reads.%s",
+				lead,
+				portfolioRepoCount,
+				tail.isBlank() ? "" : tail));
 	}
 
 	private static String buildActivityExplanation(
@@ -962,33 +963,33 @@ public class GitHubAnalysisService {
 			boolean recentActivityStrength) {
 		if (portfolioRepoCount <= 0) {
 			return sentenceDot(
-					"Activity stays neutral until there are qualifying analyzed repositories to inspect for recent updates.");
+					"Recent activity waits on portfolio repos to measure—nothing to gauge yet.");
 		}
 		if (recentActivityStrength && activityScore >= 70) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Activity looks strong across %d percent of qualifying analyzed portfolio repositories after recent updates surfaced.",
+							"Around %d%% of portfolio repos landed recent updates—a healthy upkeep cadence.",
 							activityScore));
 		}
 		if (recentActivityStrength) {
 			return sentenceDot(
-					"Activity is supported because at least one qualifying analyzed portfolio repository was updated recently within the monitored window.");
+					"We saw at least one portfolio repo refreshed inside the recent window, which offsets quiet neighbors.");
 		}
 		if (activityScore >= 66) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Healthy maintainership signals appear with %d percent of analyzed qualifying repositories showing fresh commits.",
+							"Around %d%% of portfolio repos show commits within roughly the last six months.",
 							activityScore));
 		}
 		if (activityScore <= 33) {
 			return sentenceDot(
 					String.format(Locale.ROOT,
-							"Activity sits weak at roughly %d percent because most qualifying analyzed portfolio repositories stalled before the six-month cutoff.",
+							"Only about %d%% of portfolio repos updated recently—the rest look quiet lately.",
 							activityScore));
 		}
 		return sentenceDot(
 				String.format(Locale.ROOT,
-						"Activity is middling (~%d percent) relative to analyzed qualifying repositories that refreshed inside the monitored window.",
+						"Activity lands around ~%d%% overall—steady enough, but bursts of upkeep would brighten the pulse.",
 						activityScore));
 	}
 
@@ -1282,20 +1283,20 @@ public class GitHubAnalysisService {
 			ReadmeAnalysisDto readmeAnalysis) {
 		List<String> signals = new ArrayList<>();
 		if (fork) {
-			signals.add("Forked repository");
+			signals.add("Fork");
 		}
 		else if (originalRepo) {
-			signals.add("Original repository");
+			signals.add("Original repo");
 		}
 		if (likelyDemoRepo) {
-			signals.add("Likely demo/sample repository");
+			signals.add("Looks like a demo or sample");
 		}
 		appendRepoDocumentationSignals(signals, readmeAnalysis, hasStrongDescription);
 		if (hasLanguage) {
-			signals.add("Uses a detected primary language");
+			signals.add("Language listed");
 		}
 		if (hasStrongDescription) {
-			signals.add("Has a strong description");
+			signals.add("Clear description");
 		}
 		if (recentlyUpdated) {
 			signals.add("Recently updated");
@@ -1311,32 +1312,32 @@ public class GitHubAnalysisService {
 			ReadmeAnalysisDto readme,
 			boolean hasStrongDescription) {
 		if (!readme.hasReadme()) {
-			signals.add("Missing README");
+			signals.add("No README yet");
 		}
 		else {
-			signals.add("Has README");
+			signals.add("README present");
 			if (readme.hasInstallationInstructions()) {
-				signals.add("README explains setup");
+				signals.add("README covers setup");
 			}
 			if (readme.hasUsageInstructions()) {
-				signals.add("README explains usage");
+				signals.add("README covers usage");
 			}
 			if (readme.hasTechStackMention()) {
-				signals.add("README mentions tech stack");
+				signals.add("README mentions stack");
 			}
 			if (readme.hasScreenshots()) {
-				signals.add("README includes screenshots");
+				signals.add("README has screenshots");
 			}
 		}
 		int docScore = readme.documentationScore();
 		if (docScore < 40) {
-			signals.add("Weak documentation");
+			signals.add("README could be stronger");
 		}
 		if (docScore >= 70) {
-			signals.add("Strong documentation");
+			signals.add("README looks thorough");
 		}
 		if (!hasStrongDescription) {
-			signals.add("Missing strong description");
+			signals.add("Could use a sharper description");
 		}
 	}
 
@@ -1361,24 +1362,24 @@ public class GitHubAnalysisService {
 			boolean hasStrongDescription,
 			int repoScore) {
 		if (fork) {
-			return "Forked repository";
+			return "Fork";
 		}
 		if (likelyDemoRepo) {
-			return "Likely demo/sample repository";
+			return "Looks like a demo or sample";
 		}
 		if (documentationScore == 0 && !hasStrongDescription) {
-			return "Active project but missing documentation";
+			return "Active, but README is thin";
 		}
 		if (repoScore >= 85) {
-			return "Strong portfolio project signal";
+			return "Strong portfolio repo";
 		}
 		if (repoScore >= 70) {
-			return "Promising project";
+			return "Solid project";
 		}
 		if (repoScore >= 50) {
-			return "Basic project signal";
+			return "Basic project";
 		}
-		return "Needs stronger project signals";
+		return "Room to strengthen this repo";
 	}
 
 	private static Map<String, Long> portfolioLanguageCounts(List<RepoAnalysisDto> portfolioRepos) {

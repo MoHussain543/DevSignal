@@ -1,46 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  Activity,
   AlertTriangle,
   CheckCircle2,
-  Gauge,
-  Radar,
   Search,
   Sparkles,
-  Target,
   Terminal,
   TrendingUp,
 } from 'lucide-react'
 
-/** Neutral placeholder slugs only — no personal or fixed celebrity handles. */
 function randomGithubPlaceholder() {
   const stem = ['nova', 'orbit', 'flux', 'delta', 'vertex', 'signal'][Math.floor(Math.random() * 6)]
   const suffix = Math.random().toString(36).slice(2, 8)
   return `${stem}-${suffix}`
 }
 
-/** Decorative icons inside hero preview score ring — rotate every 15s */
-const MOCKUP_SCORE_CYCLE_ICONS = [TrendingUp, Gauge, Radar, Activity, Target]
-
-const MOCKUP_SIGNALS = [
-  'Your own repositories stand out',
-  'Recent commits and updates',
-  'Several languages and tools in use',
-]
-
 export default function SearchBar({ onSearch, loading }) {
   const [value, setValue] = useState('')
-  const [mockupScoreIconIdx, setMockupScoreIconIdx] = useState(0)
   const [inputFocused, setInputFocused] = useState(false)
   const [ghostUsername, setGhostUsername] = useState(() => randomGithubPlaceholder())
   const inputRef = useRef(null)
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setMockupScoreIconIdx((i) => (i + 1) % MOCKUP_SCORE_CYCLE_ICONS.length)
-    }, 15000)
-    return () => window.clearInterval(id)
-  }, [])
 
   useEffect(() => {
     if (inputFocused || value.trim() !== '' || loading) return
@@ -49,8 +27,6 @@ export default function SearchBar({ onSearch, loading }) {
     }, 2600)
     return () => window.clearInterval(id)
   }, [inputFocused, value, loading])
-
-  const MockupScoreIcon = MOCKUP_SCORE_CYCLE_ICONS[mockupScoreIconIdx]
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -67,6 +43,10 @@ export default function SearchBar({ onSearch, loading }) {
   const scrollToInput = () => {
     inputRef.current?.focus()
     inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
+  const scrollToFeatures = () => {
+    document.getElementById('section-ai-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -95,18 +75,27 @@ export default function SearchBar({ onSearch, loading }) {
 
           <div className="hero-eyebrow">
             <Sparkles size={12} strokeWidth={1.8} aria-hidden />
-            Straightforward feedback on your public GitHub work
+            Developer intelligence for GitHub profiles
           </div>
 
           <h1 className="hero-headline">
-            Understand how your GitHub profile
-            <span className="hero-headline-accent"> comes across at a glance.</span>
+            Turn GitHub profiles into
+            <span className="hero-headline-accent"> hiring-ready insights.</span>
           </h1>
+
+          <p className="hero-subheadline">
+            Analyze repositories, documentation, project quality, technology variety, and portfolio
+            signals from a single GitHub username.
+          </p>
 
           <div className="hero-cta-row">
             <button type="button" className="btn-primary" onClick={scrollToInput}>
               <Search size={15} strokeWidth={2} aria-hidden />
-              Analyze a profile
+              Analyze a Profile
+            </button>
+            <button type="button" className="btn-outline" onClick={scrollToFeatures}>
+              <Sparkles size={15} strokeWidth={1.8} aria-hidden />
+              See What DevSignal Can Do
             </button>
           </div>
 
@@ -137,66 +126,68 @@ export default function SearchBar({ onSearch, loading }) {
           </p>
         </div>
 
-        {/* ── Right column: floating mockup card ── */}
-        <div className="hero-mockup-col" aria-hidden>
-          <div className="hero-mockup-wrap">
-            <div className="hero-mockup-glow" />
+        {/* ── Right column: intelligence pipeline scene ── */}
+        <div className="hero-scene-col" aria-hidden>
+          <div className="hero-scene">
 
-            <div className="hero-mockup-card">
-              {/* macOS-style window chrome */}
-              <div className="mockup-titlebar">
-                <div className="mockup-dots">
-                  <span className="mockup-dot mockup-dot-red" />
-                  <span className="mockup-dot mockup-dot-yellow" />
-                  <span className="mockup-dot mockup-dot-green" />
-                </div>
-                <span className="mockup-title">DevSignal</span>
-              </div>
+            {/* Wide atmosphere glow — no bounding box */}
+            <div className="hero-scene-glow" />
 
-              <div className="mockup-body">
-                {/* Score + level */}
-                <div className="mockup-score-row">
-                  <div className="mockup-score-ring">
-                    <div className="mockup-score-inner">
-                      <span className="mockup-score-num">82</span>
-                      <span className="mockup-score-sub">/100</span>
-                    </div>
-                  </div>
-                  <div className="mockup-score-meta">
-                    <div className="mockup-score-meta-head">
-                      <span className="mockup-score-meta-icon-slot" aria-hidden key={mockupScoreIconIdx}>
-                        <MockupScoreIcon size={17} strokeWidth={1.85} className="mockup-score-meta-ico" />
-                      </span>
-                      <div className="mockup-level">Promising candidate</div>
-                    </div>
-                    <div className="mockup-signal-text">
-                      Strong projects overall; README setup could be clearer.
-                    </div>
-                  </div>
-                </div>
-
-                {/* Top signals */}
-                <div className="mockup-group">
-                  <div className="mockup-section-label">Standouts</div>
-                  {MOCKUP_SIGNALS.map((s) => (
-                    <div key={s} className="mockup-signal-item mockup-item-green">
-                      <CheckCircle2 size={12} strokeWidth={2} aria-hidden /> {s}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Growth area */}
-                <div className="mockup-group">
-                  <div className="mockup-section-label">Room to improve</div>
-                  <div className="mockup-signal-item mockup-item-yellow">
-                    <AlertTriangle size={12} strokeWidth={2} aria-hidden /> Add clearer README installation steps
-                  </div>
-                </div>
-
+            {/* ── Layer 1: GitHub profile input ── */}
+            <div className="hero-scene-input-row">
+              <div className="hero-scene-input-chip">
+                <span className="hero-scene-input-prompt">$</span>
+                <span className="hero-scene-input-cmd">&nbsp;devsignal analyze&nbsp;</span>
+                <span className="hero-scene-input-user">vertex-dev</span>
+                <span className="hero-scene-cursor" />
               </div>
             </div>
+
+            {/* Wire: input → nodes */}
+            <div className="hero-scene-wire" />
+
+            {/* ── Layer 2: Five analysis signal nodes ── */}
+            <div className="hero-scene-nodes">
+              <span className="hero-scene-node" style={{ animationDelay: '0s' }}>Repo quality</span>
+              <span className="hero-scene-node" style={{ animationDelay: '0.45s' }}>README depth</span>
+              <span className="hero-scene-node" style={{ animationDelay: '0.9s' }}>Languages</span>
+              <span className="hero-scene-node" style={{ animationDelay: '1.35s' }}>Original work</span>
+              <span className="hero-scene-node" style={{ animationDelay: '1.8s' }}>Activity</span>
+            </div>
+
+            {/* Wire: nodes → score */}
+            <div className="hero-scene-wire" />
+
+            {/* ── Layer 3: Score ring + floating output badges ── */}
+            <div className="hero-scene-score-section">
+
+              {/* Badges floating around the ring — absolutely positioned */}
+              <div className="hero-scene-badge hero-scene-badge--green">
+                <CheckCircle2 size={10} strokeWidth={2} /> Promising signal
+              </div>
+              <div className="hero-scene-badge hero-scene-badge--violet">
+                <TrendingUp size={10} strokeWidth={2} /> Backend-heavy
+              </div>
+              <div className="hero-scene-badge hero-scene-badge--yellow">
+                <AlertTriangle size={10} strokeWidth={2} /> README gaps
+              </div>
+
+              {/* Dominant score ring */}
+              <div className="hero-scene-ring">
+                <div className="hero-scene-ring-inner">
+                  <span className="hero-scene-ring-num">82</span>
+                  <span className="hero-scene-ring-denom">/100</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer label */}
+            <div className="hero-scene-footer">DevSignal · Analysis Complete</div>
+
           </div>
         </div>
+
       </div>
     </section>
   )
