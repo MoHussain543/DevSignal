@@ -1,5 +1,6 @@
 package com.devsignal.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class AnalysisRunService {
 
 	@Transactional
 	public AnalysisRun createAnalysisRun(AnalysisResponseDto analysis) {
+		OffsetDateTime now = OffsetDateTime.now();
 		AnalysisRun run = AnalysisRun.builder()
 				.id(UUID.randomUUID())
 				.runKey(UUID.randomUUID())
@@ -44,6 +46,8 @@ public class AnalysisRunService {
 				.analysisJson(toJson(analysis))
 				.aiReportJson(null)
 				.roadmapJson(null)
+				.createdAt(now)
+				.updatedAt(now)
 				.build();
 
 		return analysisRunRepository.save(run);

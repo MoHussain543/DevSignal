@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -51,7 +49,6 @@ public class AnalysisRun {
 	@Column(name = "candidate_label")
 	private String candidateLabel;
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private AnalysisRunStatus status;
 
