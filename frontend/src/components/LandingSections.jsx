@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import RevealSection from './RevealSection.jsx'
 import {
   Activity,
@@ -162,9 +163,9 @@ export default function LandingSections() {
 
             {/* Copy column */}
             <div className="landing-feature-copy">
-              <div className="landing-section-eyebrow">
+              <div className="landing-section-eyebrow landing-section-eyebrow--live">
                 <Sparkles size={12} strokeWidth={1.8} aria-hidden />
-                Coming Soon
+                Now Available
               </div>
               <h2 id="landing-ai-heading" className="landing-feature-title">
                 AI Report Summary
@@ -178,10 +179,10 @@ export default function LandingSections() {
                 <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Hiring-style impression</li>
                 <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Personalized next steps</li>
               </ul>
-              <button className="btn-outline" disabled aria-disabled="true" aria-label="AI Summary — coming soon">
+              <Link to="/ai-report" className="btn-primary landing-feature-cta">
                 <Sparkles size={14} strokeWidth={1.8} aria-hidden />
-                Coming Soon
-              </button>
+                Try AI Report
+              </Link>
             </div>
 
             {/* Preview card column */}

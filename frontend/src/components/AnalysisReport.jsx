@@ -1,6 +1,7 @@
 import RepoCard from './RepoCard.jsx'
 import RevealSection from './RevealSection.jsx'
 import SectionHeading from './SectionHeading.jsx'
+import AiSummaryCard from './AiSummaryCard.jsx'
 import {
   Activity,
   BarChart3,
@@ -88,6 +89,7 @@ export default function AnalysisReport({ data }) {
     featuredRepo,
     featuredRepoReason,
     repos,
+    aiSummary,
   } = data
 
   const spotlightRepo = featuredRepo ?? null
@@ -153,6 +155,12 @@ export default function AnalysisReport({ data }) {
               </div>
             </div>
           </RevealSection>
+
+          {aiSummary ? (
+            <RevealSection delay={24}>
+              <AiSummaryCard aiSummary={aiSummary} />
+            </RevealSection>
+          ) : null}
 
           <RevealSection delay={30}>
             <div className="card evaluation-summary-card evaluation-summary-card--editorial">

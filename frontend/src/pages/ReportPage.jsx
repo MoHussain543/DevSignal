@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import AnalysisReport from '../components/AnalysisReport.jsx'
-import { ArrowLeft, Search, Terminal } from 'lucide-react'
+import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
+import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
+import ReportPageFooter from '../components/ReportPageFooter.jsx'
+import { ArrowLeft } from 'lucide-react'
 
 const LOADING_MESSAGES = [
   'Fetching public GitHub profile…',
@@ -9,19 +12,19 @@ const LOADING_MESSAGES = [
   'Checking README files…',
   'Scoring portfolio signals…',
   'Preparing your report…',
+  'Writing AI summary…',
 ]
 
 export default function ReportPage() {
   const { username } = useParams()
   const navigate = useNavigate()
 
-  const [data,           setData]           = useState(null)
-  const [loading,        setLoading]        = useState(true)
-  const [error,          setError]          = useState(null)
-  const [msgIdx,         setMsgIdx]         = useState(0)
-  const [searchValue,    setSearchValue]    = useState('')
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [msgIdx, setMsgIdx] = useState(0)
+  const [searchValue, setSearchValue] = useState('')
 
-  /* Cycle loading messages */
   useEffect(() => {
     if (!loading) return
     const id = setInterval(() => {
@@ -30,7 +33,6 @@ export default function ReportPage() {
     return () => clearInterval(id)
   }, [loading])
 
-  /* Fetch whenever the username param changes */
   useEffect(() => {
     if (!username) return
     setData(null)
@@ -39,7 +41,7 @@ export default function ReportPage() {
     setMsgIdx(0)
     window.scrollTo(0, 0)
 
-    fetch(`http://localhost:8080/api/analyze/${encodeURIComponent(username)}`)
+    fetch(`http://localhost:8080/api/report/${encodeURIComponent(username)}`)
       .then((res) => {
         if (!res.ok) {
           return res.json().catch(() => null).then((body) => {
@@ -49,7 +51,10 @@ export default function ReportPage() {
         return res.json()
       })
       .then((json) => {
-        setData(json)
+        setData({
+          ...json.analysis,
+          aiSummary: json.aiSummary,
+        })
         setLoading(false)
       })
       .catch((e) => {
@@ -64,7 +69,7 @@ export default function ReportPage() {
 
   const handleAnotherSearch = (e) => {
     e.preventDefault()
-    const trimmed = searchValue.trim()
+    const trimmed = searchValue.trim().replace(/^@/, '')
     if (!trimmed) return
     setSearchValue('')
     navigate(`/report/${encodeURIComponent(trimmed)}`)
@@ -73,50 +78,9 @@ export default function ReportPage() {
   return (
     <div className="app-shell">
       <div className="main-area">
-
-        {/* ── Report page header ── */}
-        <header className="site-header report-page-header">
-          <Link to="/" className="report-back-link" aria-label="Back to home">
-            <ArrowLeft size={14} strokeWidth={2} aria-hidden />
-            Home
-          </Link>
-          <div className="header-sep" />
-          <span className="header-brand">DevSignal</span>
-
-          <span className="report-analyzing-chip" aria-label={`Analyzing @${username}`}>
-            Analyzing&nbsp;<span className="report-analyzing-username">@{username}</span>
-          </span>
-
-          <form
-            className="report-search-form"
-            onSubmit={handleAnotherSearch}
-            aria-label="Analyze another profile"
-          >
-            <Terminal size={13} strokeWidth={1.65} className="report-search-ico" aria-hidden />
-            <input
-              className="report-search-input"
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Analyze another username…"
-              autoComplete="off"
-              spellCheck={false}
-              aria-label="GitHub username"
-            />
-            <button
-              type="submit"
-              className="report-search-btn"
-              disabled={!searchValue.trim()}
-              aria-label="Analyze"
-            >
-              <Search size={13} strokeWidth={2} aria-hidden />
-            </button>
-          </form>
-        </header>
+        <MinimalSiteHeader />
 
         <main className="content">
-
-          {/* ── Polished loading state ── */}
           {loading && (
             <div className="report-loading-shell" role="status" aria-live="polite">
               <div className="report-loading-card">
@@ -137,7 +101,6 @@ export default function ReportPage() {
             </div>
           )}
 
-          {/* ── Error state ── */}
           {error && !loading && (
             <div className="state-box error-state">
               <span className="state-icon">⚠</span>
@@ -148,9 +111,17 @@ export default function ReportPage() {
             </div>
           )}
 
-          {/* ── Report ── */}
-          {data && !loading ? <AnalysisReport data={data} /> : null}
-
+          {data && !loading ? (
+            <div className="report-page-stack">
+              <AnalyzeAnotherBar
+                value={searchValue}
+                onChange={setSearchValue}
+                onSubmit={handleAnotherSearch}
+              />
+              <AnalysisReport data={data} />
+              <ReportPageFooter />
+            </div>
+          ) : null}
         </main>
       </div>
     </div>
