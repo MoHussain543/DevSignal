@@ -294,26 +294,26 @@ export default function LandingSections() {
 
             {/* Copy column (right on desktop) */}
             <div className="landing-feature-copy">
-              <div className="landing-section-eyebrow">
+              <div className="landing-section-eyebrow landing-section-eyebrow--live">
                 <Map size={12} strokeWidth={1.8} aria-hidden />
-                Coming Soon
+                Now Available
               </div>
               <h2 id="landing-roadmap-heading" className="landing-feature-title">
-                Improvement Roadmap
+                AI Roadmap
               </h2>
               <p className="landing-feature-sub">
-                Know exactly what to improve next to make your GitHub portfolio stronger.
+                Build a clearer path to a stronger GitHub portfolio — tailored to your actual work.
               </p>
               <ul className="landing-feature-bullets" aria-label="Feature highlights">
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Prioritized quick wins to do right now</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Highest-impact fixes for your profile</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Next project ideas to fill skill gaps</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Study roadmap tailored to your stack</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Quick wins you can make this week</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Skills to learn based on your real gaps</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Tailored project ideas to improve hiring signal</li>
+                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Realistic 3-month improvement plan</li>
               </ul>
-              <button className="btn-outline" disabled aria-disabled="true" aria-label="Improvement Roadmap — coming soon">
-                <ListChecks size={14} strokeWidth={1.8} aria-hidden />
-                Coming Soon
-              </button>
+              <Link to="/roadmap" className="btn-primary landing-feature-cta">
+                <Map size={14} strokeWidth={1.8} aria-hidden />
+                Generate My Roadmap
+              </Link>
             </div>
 
           </div>
