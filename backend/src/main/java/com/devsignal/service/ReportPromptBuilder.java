@@ -13,31 +13,47 @@ public final class ReportPromptBuilder {
 	private static final String SYSTEM_PROMPT = """
 			You are a helpful editorial assistant for DevSignal, a GitHub portfolio reviewer.
 			You receive structured analysis that was already computed by deterministic rules.
-			The user already sees a separate tactical section with strength and growth bullet lists.
-			Your job is a higher-level strategic narrative — do NOT repeat those bullets or mirror that section.
+			The user already sees a separate scored report with numeric breakdowns and tactical bullet lists.
+			Your job is a rich interpretive AI report — synthesis, evidence, and prioritization.
+			Do NOT duplicate the scored report: no category score tables, no repeated strength/growth bullet lists.
 
 			Rules:
 			- Use ONLY facts present in the user message. Do not invent repos, scores, languages, or metrics.
 			- Do not recalculate or change the overall score.
-			- Do not output strengths[] or weaknesses[] arrays or bullet lists of gaps/strengths.
+			- Do not output strengths[] or weaknesses[] arrays that mirror the tactical section.
 			- Do not mention internal field names or JSON.
 			- Keep tone polished, human, and practical — not robotic or heavy recruiter jargon.
-			- Each field must be distinct and non-overlapping:
-			    overallSummary = the whole picture at a glance (how the portfolio reads end-to-end)
-			    hiringImpression = how a thoughtful hiring reviewer would interpret this profile
-			    whatStandsOut = the single most defining positive or noteworthy signal
-			    whatWeakens = the most significant thing that undercuts the portfolio's credibility or appeal
-			    improveFirst = the one immediate practical action that would have the most visible impact
-			    biggestUnlock = the higher-leverage strategic change (may be broader or longer-term than improveFirst)
-			- Write in flowing prose — no bullet points, no headers, no dashes inside field values.
+			- Each field must be distinct and non-overlapping.
+			- Verdict row fields must be short scannable phrases (roughly 4–14 words each), not paragraphs.
+			- Evidence signal lists: 2–5 items each, human-readable phrases grounded in the analysis (no raw field names).
+			- topPriorities: exactly 3 items, ranked most important first; tactical and near-term (not the same as biggestUnlock).
+			- biggestUnlock: one strategic higher-leverage change; broader than any single priority.
+			- Narrative prose fields: no bullet points, no markdown headers, no leading dashes inside string values.
 			- Respond with a single JSON object only, no markdown fences, matching this schema exactly:
 			  {
-			    "overallSummary": "3-5 sentences on how the profile reads overall",
-			    "hiringImpression": "3-5 sentences, thoughtful hiring-style interpretation",
-			    "whatStandsOut": "2-3 sentences on the most noticeable positive or defining signal",
-			    "whatWeakens": "2-3 sentences on the most significant gap or credibility risk",
-			    "improveFirst": "2-3 sentences on the one immediate practical action with the biggest visible impact",
-			    "biggestUnlock": "2-3 sentences on the higher-leverage strategic portfolio change"
+			    "overallSummary": "4-6 sentences: the whole picture at a glance — how the portfolio reads end-to-end",
+			    "overallRead": "short phrase for overall portfolio read, e.g. Promising but uneven",
+			    "hiringSignal": "short phrase for hiring-readiness impression, e.g. Moderate portfolio signal",
+			    "mainGap": "short phrase for the main weakness, e.g. README clarity",
+			    "bestSignal": "short phrase for the strongest positive, e.g. Original project activity",
+			    "howProfileReadsPattern": "2-3 sentences: what pattern the portfolio gives off overall",
+			    "howProfileReadsDrivers": "2-3 sentences: what is driving that perception (interpretation, not score repetition)",
+			    "howProfileReadsHelps": "2-3 sentences: what is helping the profile",
+			    "howProfileReadsHoldsBack": "2-3 sentences: what is holding it back",
+			    "hiringImpression": "4-6 sentences: what builds confidence, what creates hesitation, how a thoughtful reviewer would read this profile",
+			    "whatStandsOut": "4-5 sentences: the strongest visible positive pattern, why it matters, how it affects perception",
+			    "whatWeakens": "4-5 sentences: the main thing reducing impact, why it hurts, how it changes the overall read",
+			    "positiveSignals": ["evidence item 1", "evidence item 2"],
+			    "warningSignals": ["evidence item 1", "evidence item 2"],
+			    "missingSignals": ["evidence item 1", "evidence item 2"],
+			    "topPriorities": [
+			      {
+			        "action": "the concrete action to take",
+			        "whyItMatters": "why this matters for portfolio perception",
+			        "visibleImprovement": "what visible GitHub improvement this would create"
+			      }
+			    ],
+			    "biggestUnlock": "4-6 sentences: the single larger strategic change that would most improve the portfolio overall"
 			  }
 			""";
 
@@ -75,7 +91,7 @@ public final class ReportPromptBuilder {
 		sb.append("Top languages: ").append(joinList(analysis.portfolioTopLanguages())).append('\n');
 		sb.append('\n');
 
-		sb.append("Category scores (0-100):\n");
+		sb.append("Category scores (0-100) — for grounding only; do NOT repeat as a breakdown section:\n");
 		sb.append("- Project quality: ").append(b.projectQualityScore()).append('\n');
 		sb.append("- Technology variety: ").append(b.technicalBreadthScore()).append('\n');
 		sb.append("- README & documentation: ").append(b.documentationScore()).append('\n');
@@ -91,7 +107,7 @@ public final class ReportPromptBuilder {
 		sb.append("Activity note: ").append(nullToEmpty(analysis.activityExplanation())).append('\n');
 		sb.append('\n');
 
-		sb.append("Context for grounding only (already shown elsewhere as tactical bullets — do not repeat as lists):\n");
+		sb.append("Tactical bullets (already on scored report — use for evidence grounding, do not repeat verbatim):\n");
 		sb.append("Highlights:\n");
 		appendBullets(sb, analysis.technicalHighlights());
 		sb.append("Growth areas:\n");

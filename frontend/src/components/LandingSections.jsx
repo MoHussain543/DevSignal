@@ -9,11 +9,12 @@ import {
   CheckCircle2,
   Code2,
   FolderGit2,
-  ListChecks,
   Map,
   Sparkles,
   Target,
   TrendingUp,
+  ListChecks,
+  Search,
 } from 'lucide-react'
 
 const ANALYZES_FEATURES = [
@@ -57,19 +58,28 @@ const ANALYZES_FEATURES = [
 
 const HOW_IT_WORKS = [
   {
+    icon: Search,
     step: '01',
+    label: 'Input',
     title: 'Enter a GitHub username',
     desc: 'Use the search bar above. You do not need to create an account.',
+    points: ['Paste any public GitHub username', 'No signup or setup required'],
   },
   {
+    icon: FolderGit2,
     step: '02',
+    label: 'Analysis',
     title: 'We review what is public',
     desc: 'DevSignal reads public profile and repository pages (such as README files) and prepares your report.',
+    points: ['Checks repos, README files, activity, and portfolio signals', 'Uses what GitHub already exposes publicly'],
   },
   {
+    icon: TrendingUp,
     step: '03',
+    label: 'Output',
     title: 'Read your results',
     desc: 'See scores, charts, repository notes, strengths, and concrete suggestions on one page.',
+    points: ['Get the scored report and feature-specific AI layers', 'See where the strongest signal and biggest gaps are'],
   },
 ]
 
@@ -127,14 +137,40 @@ export default function LandingSections() {
             </p>
           </div>
 
-          <div className="hiw-steps">
-            {HOW_IT_WORKS.map(({ step, title, desc }) => (
-              <div key={step} className="hiw-step">
-                <div className="hiw-step-num">{step}</div>
-                <div className="hiw-step-title">{title}</div>
-                <p className="hiw-step-desc">{desc}</p>
-              </div>
-            ))}
+          <div className="hiw-shell">
+            <div className="hiw-shell-head">
+              <span className="hiw-shell-kicker">Simple flow</span>
+              <p className="hiw-shell-copy">
+                DevSignal turns one public username into a report without asking you to connect accounts,
+                install anything, or prep your repositories first.
+              </p>
+            </div>
+
+            <div className="hiw-steps">
+              {HOW_IT_WORKS.map(({ icon: Icon, step, label, title, desc, points }) => (
+                <div key={step} className="hiw-step">
+                  <div className="hiw-step-top">
+                    <span className="hiw-step-icon section-icon-slot section-icon-tone-mag">
+                      <Icon size={16} strokeWidth={1.9} aria-hidden />
+                    </span>
+                    <div className="hiw-step-meta">
+                      <span className="hiw-step-num">{step}</span>
+                      <span className="hiw-step-label">{label}</span>
+                    </div>
+                  </div>
+                  <div className="hiw-step-title">{title}</div>
+                  <p className="hiw-step-desc">{desc}</p>
+                  <ul className="hiw-step-points" aria-label={`${title} details`}>
+                    {points.map((point) => (
+                      <li key={point}>
+                        <span className="hiw-step-point-dot" aria-hidden />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </RevealSection>
@@ -156,7 +192,7 @@ export default function LandingSections() {
         <section
           id="section-ai-summary"
           data-nav-section="ai-summary"
-          className="landing-block"
+          className="landing-block feature-scope-ai-report"
           aria-labelledby="landing-ai-heading"
         >
           <div className="landing-feature-split">
@@ -179,7 +215,7 @@ export default function LandingSections() {
                 <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Hiring-style impression</li>
                 <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Personalized next steps</li>
               </ul>
-              <Link to="/ai-report" className="btn-primary landing-feature-cta" aria-label="Open AI Report">
+              <Link to="/ai-report" className="btn-primary landing-feature-cta">
                 <Sparkles size={14} strokeWidth={1.8} aria-hidden />
                 Try AI Report
               </Link>
@@ -190,11 +226,11 @@ export default function LandingSections() {
               <div className="card card-gradient-edge-sm landing-preview-card">
 
                 <div className="landing-preview-card-header">
-                  <span className="section-icon-slot section-icon-tone-violet" aria-hidden>
+                  <span className="section-icon-slot section-icon-tone-ai-report" aria-hidden>
                     <Sparkles size={16} strokeWidth={1.75} />
                   </span>
                   <span className="landing-preview-card-name">AI Report Summary</span>
-                  <span className="badge badge-violet">Preview</span>
+                  <span className="badge badge-violet badge-ai-report">Preview</span>
                 </div>
 
                 <div className="landing-preview-quote">
@@ -234,7 +270,7 @@ export default function LandingSections() {
         <section
           id="section-roadmap"
           data-nav-section="roadmap"
-          className="landing-block"
+          className="landing-block feature-scope-roadmap"
           aria-labelledby="landing-roadmap-heading"
         >
           <div className="landing-feature-split landing-feature-split--reverse">
@@ -244,11 +280,11 @@ export default function LandingSections() {
               <div className="card card-gradient-edge-sm landing-preview-card">
 
                 <div className="landing-preview-card-header">
-                  <span className="section-icon-slot section-icon-tone-mag" aria-hidden>
+                  <span className="section-icon-slot section-icon-tone-roadmap" aria-hidden>
                     <Map size={16} strokeWidth={1.75} />
                   </span>
                   <span className="landing-preview-card-name">Improvement Roadmap</span>
-                  <span className="badge badge-violet">Preview</span>
+                  <span className="badge badge-violet badge-roadmap">Preview</span>
                 </div>
 
                 <div className="landing-roadmap-phases">

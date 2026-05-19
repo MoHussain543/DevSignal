@@ -70,7 +70,7 @@ function RoadmapSection({ eyebrow, title, icon: Icon, children, variant }) {
   return (
     <div className={`roadmap-section roadmap-section--${variant}`}>
       <div className="roadmap-section-header">
-        <span className={`roadmap-section-icon section-icon-slot section-icon-tone-${variant === 'mag' ? 'mag' : variant === 'warm' ? 'warm' : variant === 'pos' ? 'pos' : 'violet'}`} aria-hidden>
+        <span className={`roadmap-section-icon section-icon-slot section-icon-tone-${variant === 'warm' ? 'warm' : variant === 'pos' ? 'pos' : 'roadmap'}`} aria-hidden>
           <Icon size={17} strokeWidth={1.75} />
         </span>
         <div>
@@ -117,7 +117,7 @@ export default function RoadmapResultPage() {
   const loading = !data && !error
 
   return (
-    <div className="app-shell">
+    <div className="app-shell theme-roadmap">
       <div className="main-area">
         <MinimalSiteHeader />
 
@@ -147,13 +147,12 @@ export default function RoadmapResultPage() {
 
             return (
               <div className="report-page-stack">
-                <AnalyzeAnotherBar
-                  value={searchValue}
-                  onChange={setSearchValue}
-                  onSubmit={handleAnalyzeAnother}
-                />
-
                 <div className="roadmap-result-page">
+                  <AnalyzeAnotherBar
+                    value={searchValue}
+                    onChange={setSearchValue}
+                    onSubmit={handleAnalyzeAnother}
+                  />
 
                   {/* Profile strip */}
                   <div className="ai-result-profile-strip roadmap-profile-strip">

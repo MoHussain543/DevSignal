@@ -1,4 +1,4 @@
-import { Sparkles, Target, TrendingUp, Zap } from 'lucide-react'
+import { Sparkles, Target, TrendingUp } from 'lucide-react'
 import SectionHeading from './SectionHeading.jsx'
 
 function NarrativeSection({ label, children, variant = 'default' }) {
@@ -21,22 +21,23 @@ export default function AiSummaryCard({ aiSummary }) {
     overallSummary,
     hiringImpression,
     whatStandsOut,
-    improveFirst,
+    topPriorities,
     biggestUnlock,
     unavailableReason,
   } = aiSummary
+
+  const firstPriority = topPriorities?.[0]
 
   return (
     <div className="card ai-summary-card card-gradient-edge-sm">
       <SectionHeading
         icon={Sparkles}
-        tone="violet"
+        tone="ai-report"
         title="AI Perspective"
         titleClassName="card-title--lead"
       />
       <p className="ai-summary-disclaimer text-muted">
-        A strategic read of your scored report — not a second checklist. Tactical strengths and growth
-        areas stay in the section below.
+        A strategic read of your scored report — open the full AI report for verdict, evidence, and priorities.
       </p>
 
       {!available ? (
@@ -60,14 +61,14 @@ export default function AiSummaryCard({ aiSummary }) {
           ) : null}
 
           <div className="ai-narrative-actions">
-            {improveFirst ? (
+            {firstPriority?.action ? (
               <div className="ai-narrative-action ai-narrative-action--first">
                 <span className="ai-narrative-action-icon" aria-hidden>
-                  <Zap size={15} strokeWidth={1.85} />
+                  <Target size={15} strokeWidth={1.85} />
                 </span>
                 <div>
-                  <h3 className="ai-narrative-label">Improve first</h3>
-                  <p className="ai-narrative-text">{improveFirst}</p>
+                  <h3 className="ai-narrative-label">Top priority</h3>
+                  <p className="ai-narrative-text">{firstPriority.action}</p>
                 </div>
               </div>
             ) : null}

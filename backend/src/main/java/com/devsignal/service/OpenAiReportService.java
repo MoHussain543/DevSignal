@@ -1,10 +1,13 @@
 package com.devsignal.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.devsignal.config.OpenAiProperties;
+import com.devsignal.dto.ai.AiPriorityItemDto;
 import com.devsignal.dto.ai.AiReportDto;
 import com.devsignal.dto.ai.AiReportResponseDto;
 import com.devsignal.dto.analysis.AnalysisResponseDto;
@@ -73,10 +76,21 @@ public class OpenAiReportService {
 			AiSummaryPayload payload = parsePayload(content);
 			return AiReportDto.available(
 					payload.overallSummary(),
+					payload.overallRead(),
+					payload.hiringSignal(),
+					payload.mainGap(),
+					payload.bestSignal(),
+					payload.howProfileReadsPattern(),
+					payload.howProfileReadsDrivers(),
+					payload.howProfileReadsHelps(),
+					payload.howProfileReadsHoldsBack(),
 					payload.hiringImpression(),
 					payload.whatStandsOut(),
 					payload.whatWeakens(),
-					payload.improveFirst(),
+					payload.positiveSignals(),
+					payload.warningSignals(),
+					payload.missingSignals(),
+					mapPriorities(payload.topPriorities()),
 					payload.biggestUnlock());
 		}
 		catch (Exception ex) {
@@ -84,6 +98,16 @@ public class OpenAiReportService {
 			log.debug("OpenAI summary failure detail", ex);
 			return AiReportDto.unavailable(FALLBACK_MESSAGE);
 		}
+	}
+
+	private static List<AiPriorityItemDto> mapPriorities(List<PriorityPayload> items) {
+		if (items == null || items.isEmpty()) {
+			return List.of();
+		}
+		return items.stream()
+				.limit(3)
+				.map(p -> new AiPriorityItemDto(p.action(), p.whyItMatters(), p.visibleImprovement()))
+				.toList();
 	}
 
 	private OpenAIClient client() {
@@ -133,12 +157,30 @@ public class OpenAiReportService {
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
+	private record PriorityPayload(
+			String action,
+			String whyItMatters,
+			String visibleImprovement) {
+	}
+
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	private record AiSummaryPayload(
 			String overallSummary,
+			String overallRead,
+			String hiringSignal,
+			String mainGap,
+			String bestSignal,
+			String howProfileReadsPattern,
+			String howProfileReadsDrivers,
+			String howProfileReadsHelps,
+			String howProfileReadsHoldsBack,
 			String hiringImpression,
 			String whatStandsOut,
 			String whatWeakens,
-			String improveFirst,
+			List<String> positiveSignals,
+			List<String> warningSignals,
+			List<String> missingSignals,
+			List<PriorityPayload> topPriorities,
 			String biggestUnlock) {
 	}
 

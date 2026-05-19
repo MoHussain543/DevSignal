@@ -24,7 +24,7 @@ export default function RoadmapEntryPage() {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell theme-roadmap">
       <div className="main-area">
         <MinimalSiteHeader />
 
