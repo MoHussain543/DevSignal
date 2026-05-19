@@ -30,18 +30,24 @@ public class OpenAiReportService {
 	private static final ObjectMapper JSON = new ObjectMapper();
 
 	private final GitHubAnalysisService gitHubAnalysisService;
+	private final AnalysisRunService analysisRunService;
 	private final OpenAiProperties properties;
 
 	private volatile OpenAIClient client;
 
-	public OpenAiReportService(GitHubAnalysisService gitHubAnalysisService, OpenAiProperties properties) {
+	public OpenAiReportService(
+			GitHubAnalysisService gitHubAnalysisService,
+			AnalysisRunService analysisRunService,
+			OpenAiProperties properties) {
 		this.gitHubAnalysisService = gitHubAnalysisService;
+		this.analysisRunService = analysisRunService;
 		this.properties = properties;
 	}
 
 	public AiReportResponseDto buildReport(String username) {
 		AnalysisResponseDto analysis = gitHubAnalysisService.analyze(username);
 		AiReportDto aiSummary = summarize(analysis);
+		analysisRunService.saveAiReport(analysis, aiSummary);
 		return new AiReportResponseDto(analysis, aiSummary);
 	}
 

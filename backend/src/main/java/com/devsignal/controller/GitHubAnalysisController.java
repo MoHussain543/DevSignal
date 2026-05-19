@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devsignal.dto.analysis.AnalysisResponseDto;
+import com.devsignal.service.AnalysisRunService;
 import com.devsignal.service.GitHubAnalysisService;
 
 @RestController
@@ -13,13 +14,19 @@ import com.devsignal.service.GitHubAnalysisService;
 public class GitHubAnalysisController {
 
 	private final GitHubAnalysisService gitHubAnalysisService;
+	private final AnalysisRunService analysisRunService;
 
-	public GitHubAnalysisController(GitHubAnalysisService gitHubAnalysisService) {
+	public GitHubAnalysisController(
+			GitHubAnalysisService gitHubAnalysisService,
+			AnalysisRunService analysisRunService) {
 		this.gitHubAnalysisService = gitHubAnalysisService;
+		this.analysisRunService = analysisRunService;
 	}
 
 	@GetMapping("/{username}")
 	public AnalysisResponseDto analyze(@PathVariable String username) {
-		return gitHubAnalysisService.analyze(username);
+		AnalysisResponseDto analysis = gitHubAnalysisService.analyze(username);
+		analysisRunService.createAnalysisRun(analysis);
+		return analysis;
 	}
 }

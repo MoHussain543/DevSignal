@@ -32,18 +32,24 @@ public class OpenAiRoadmapService {
 	private static final ObjectMapper JSON = new ObjectMapper();
 
 	private final GitHubAnalysisService gitHubAnalysisService;
+	private final AnalysisRunService analysisRunService;
 	private final OpenAiProperties properties;
 
 	private volatile OpenAIClient client;
 
-	public OpenAiRoadmapService(GitHubAnalysisService gitHubAnalysisService, OpenAiProperties properties) {
+	public OpenAiRoadmapService(
+			GitHubAnalysisService gitHubAnalysisService,
+			AnalysisRunService analysisRunService,
+			OpenAiProperties properties) {
 		this.gitHubAnalysisService = gitHubAnalysisService;
+		this.analysisRunService = analysisRunService;
 		this.properties = properties;
 	}
 
 	public AiRoadmapResponseDto buildRoadmap(String username) {
 		AnalysisResponseDto analysis = gitHubAnalysisService.analyze(username);
 		AiRoadmapDto roadmap = generateRoadmap(analysis);
+		analysisRunService.saveRoadmap(analysis, roadmap);
 		return new AiRoadmapResponseDto(analysis, roadmap);
 	}
 
