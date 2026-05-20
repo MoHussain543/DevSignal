@@ -6,6 +6,7 @@ import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
 import ReportPageFooter from '../components/ReportPageFooter.jsx'
 import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
+import { apiBaseUrl, apiUrl, readApiError } from '../lib/api.js'
 
 const LOADING_MESSAGES = [
   'Fetching public GitHub profile…',
@@ -45,28 +46,88 @@ export default function ReportPage() {
     const headers = session?.access_token
       ? { Authorization: `Bearer ${session.access_token}` }
       : undefined
+    let cancelled = false
+    let pollTimerId = null
 
-    fetch(`http://localhost:8080/api/analyze/${encodeURIComponent(username)}`, { headers })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().catch(() => null).then((body) => {
-            throw new Error(body?.detail || `Error ${res.status}: ${res.statusText}`)
-          })
+    const handleRequestError = (e) => {
+      setError(
+        e.name === 'TypeError' && e.message.includes('fetch')
+          ? `Cannot reach the backend at ${apiBaseUrl}. Make sure the API is running and VITE_API_BASE_URL is set correctly.`
+          : e.message
+      )
+      setLoading(false)
+    }
+
+    const pollJob = async (runKey) => {
+      const res = await fetch(apiUrl(`/api/analyze/jobs/${runKey}`), { headers })
+      if (!res.ok) {
+        throw new Error(await readApiError(res))
+      }
+
+      const job = await res.json()
+      if (cancelled) return true
+
+      if (job.status === 'completed' || job.status === 'partial') {
+        setData(job.result)
+        setLoading(false)
+        return true
+      }
+
+      if (job.status === 'failed') {
+        throw new Error(job.errorMessage || 'Analysis failed. Please try again.')
+      }
+
+      return false
+    }
+
+    const schedulePoll = (runKey) => {
+      pollTimerId = window.setTimeout(async () => {
+        try {
+          const done = await pollJob(runKey)
+          if (!done && !cancelled) {
+            schedulePoll(runKey)
+          }
+        } catch (e) {
+          if (!cancelled) {
+            handleRequestError(e)
+          }
         }
-        return res.json()
-      })
-      .then((json) => {
-        setData(json)
-        setLoading(false)
-      })
-      .catch((e) => {
-        setError(
-          e.name === 'TypeError' && e.message.includes('fetch')
-            ? 'Cannot reach the backend at localhost:8080. Make sure the Spring Boot server is running.'
-            : e.message
-        )
-        setLoading(false)
-      })
+      }, 1800)
+    }
+
+    async function startJob() {
+      try {
+        const res = await fetch(apiUrl(`/api/analyze/${encodeURIComponent(username)}/jobs`), {
+          method: 'POST',
+          headers,
+        })
+
+        if (!res.ok) {
+          throw new Error(await readApiError(res))
+        }
+
+        const job = await res.json()
+        if (cancelled) return
+
+        const done = await pollJob(job.runKey)
+        if (!done && !cancelled) {
+          schedulePoll(job.runKey)
+        }
+      } catch (e) {
+        if (!cancelled) {
+          handleRequestError(e)
+        }
+      }
+    }
+
+    startJob()
+
+    return () => {
+      cancelled = true
+      if (pollTimerId !== null) {
+        window.clearTimeout(pollTimerId)
+      }
+    }
   }, [session?.access_token, username])
 
   const handleAnotherSearch = (e) => {

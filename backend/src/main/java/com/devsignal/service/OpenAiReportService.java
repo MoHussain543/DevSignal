@@ -46,12 +46,12 @@ public class OpenAiReportService {
 
 	public AiReportResponseDto buildReport(String username) {
 		AnalysisResponseDto analysis = gitHubAnalysisService.analyze(username);
-		AiReportDto aiSummary = summarize(analysis);
+		AiReportDto aiSummary = summarizeAnalysis(analysis);
 		analysisRunService.saveAiReport(analysis, aiSummary);
 		return new AiReportResponseDto(analysis, aiSummary);
 	}
 
-	private AiReportDto summarize(AnalysisResponseDto analysis) {
+	public AiReportDto summarizeAnalysis(AnalysisResponseDto analysis) {
 		if (!properties.enabled()) {
 			return AiReportDto.unavailable("AI summaries are disabled in configuration.");
 		}

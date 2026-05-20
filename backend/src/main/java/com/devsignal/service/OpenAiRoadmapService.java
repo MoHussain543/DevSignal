@@ -48,12 +48,12 @@ public class OpenAiRoadmapService {
 
 	public AiRoadmapResponseDto buildRoadmap(String username) {
 		AnalysisResponseDto analysis = gitHubAnalysisService.analyze(username);
-		AiRoadmapDto roadmap = generateRoadmap(analysis);
+		AiRoadmapDto roadmap = generateRoadmapForAnalysis(analysis);
 		analysisRunService.saveRoadmap(analysis, roadmap);
 		return new AiRoadmapResponseDto(analysis, roadmap);
 	}
 
-	private AiRoadmapDto generateRoadmap(AnalysisResponseDto analysis) {
+	public AiRoadmapDto generateRoadmapForAnalysis(AnalysisResponseDto analysis) {
 		if (!properties.enabled()) {
 			return AiRoadmapDto.unavailable("AI features are disabled in configuration.");
 		}

@@ -6,6 +6,7 @@ import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
 import ReportPageFooter from '../components/ReportPageFooter.jsx'
 import AiReportContent from '../components/AiReportContent.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { apiBaseUrl, apiUrl, readApiError } from '../lib/api.js'
 
 const AI_LOADING_MESSAGES = [
   'Fetching public profile…',
@@ -71,14 +72,85 @@ export default function AiReportResultPage() {
     const headers = session?.access_token
       ? { Authorization: `Bearer ${session.access_token}` }
       : undefined
+    let cancelled = false
+    let pollTimerId = null
 
-    fetch(`http://localhost:8080/api/report/${encodeURIComponent(username)}`, { headers })
-      .then((res) => {
-        if (!res.ok) throw new Error(`GitHub user not found or request failed (${res.status})`)
-        return res.json()
-      })
-      .then((json) => setData(json))
-      .catch((err) => setError(err.message))
+    const handleRequestError = (e) => {
+      setError(
+        e.name === 'TypeError' && e.message.includes('fetch')
+          ? `Cannot reach the backend at ${apiBaseUrl}. Make sure the API is running and VITE_API_BASE_URL is set correctly.`
+          : e.message
+      )
+    }
+
+    const pollJob = async (runKey) => {
+      const res = await fetch(apiUrl(`/api/report/jobs/${runKey}`), { headers })
+      if (!res.ok) {
+        throw new Error(await readApiError(res))
+      }
+
+      const job = await res.json()
+      if (cancelled) return true
+
+      if (job.status === 'completed' || job.status === 'partial') {
+        setData(job.result)
+        return true
+      }
+
+      if (job.status === 'failed') {
+        throw new Error(job.errorMessage || 'AI report generation failed. Please try again.')
+      }
+
+      return false
+    }
+
+    const schedulePoll = (runKey) => {
+      pollTimerId = window.setTimeout(async () => {
+        try {
+          const done = await pollJob(runKey)
+          if (!done && !cancelled) {
+            schedulePoll(runKey)
+          }
+        } catch (e) {
+          if (!cancelled) {
+            handleRequestError(e)
+          }
+        }
+      }, 1800)
+    }
+
+    async function startJob() {
+      try {
+        const res = await fetch(apiUrl(`/api/report/${encodeURIComponent(username)}/jobs`), {
+          method: 'POST',
+          headers,
+        })
+        if (!res.ok) {
+          throw new Error(await readApiError(res))
+        }
+
+        const job = await res.json()
+        if (cancelled) return
+
+        const done = await pollJob(job.runKey)
+        if (!done && !cancelled) {
+          schedulePoll(job.runKey)
+        }
+      } catch (e) {
+        if (!cancelled) {
+          handleRequestError(e)
+        }
+      }
+    }
+
+    startJob()
+
+    return () => {
+      cancelled = true
+      if (pollTimerId !== null) {
+        window.clearTimeout(pollTimerId)
+      }
+    }
   }, [session?.access_token, username])
 
   const handleAnalyzeAnother = (e) => {
