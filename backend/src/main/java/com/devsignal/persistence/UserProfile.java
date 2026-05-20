@@ -31,6 +31,12 @@ public class UserProfile {
 	@Column(nullable = false, updatable = false)
 	private UUID id;
 
+	@Column(name = "display_name")
+	private String displayName;
+
+	@Column(name = "display_name_updated_at")
+	private OffsetDateTime displayNameUpdatedAt;
+
 	@Column(name = "github_username")
 	private String githubUsername;
 
