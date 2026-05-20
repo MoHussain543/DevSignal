@@ -18,6 +18,7 @@ import {
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
 import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
 import ReportPageFooter from '../components/ReportPageFooter.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const ROADMAP_LOADING_MESSAGES = [
   'Fetching public GitHub profile…',
@@ -88,6 +89,7 @@ function RoadmapSection({ eyebrow, title, icon: Icon, children, variant }) {
 export default function RoadmapResultPage() {
   const { username } = useParams()
   const navigate = useNavigate()
+  const { session } = useAuth()
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [searchValue, setSearchValue] = useState('')
@@ -97,14 +99,18 @@ export default function RoadmapResultPage() {
     setData(null)
     setError(null)
     window.scrollTo(0, 0)
-    fetch(`http://localhost:8080/api/roadmap/${encodeURIComponent(username)}`)
+    const headers = session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : undefined
+
+    fetch(`http://localhost:8080/api/roadmap/${encodeURIComponent(username)}`, { headers })
       .then((res) => {
         if (!res.ok) throw new Error(`GitHub user not found or request failed (${res.status})`)
         return res.json()
       })
       .then((json) => setData(json))
       .catch((err) => setError(err.message))
-  }, [username])
+  }, [session?.access_token, username])
 
   const handleAnalyzeAnother = (e) => {
     e.preventDefault()

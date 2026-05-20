@@ -5,6 +5,7 @@ import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
 import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
 import ReportPageFooter from '../components/ReportPageFooter.jsx'
 import { ArrowLeft } from 'lucide-react'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const LOADING_MESSAGES = [
   'Fetching public GitHub profile…',
@@ -17,6 +18,7 @@ const LOADING_MESSAGES = [
 export default function ReportPage() {
   const { username } = useParams()
   const navigate = useNavigate()
+  const { session } = useAuth()
 
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -40,7 +42,11 @@ export default function ReportPage() {
     setMsgIdx(0)
     window.scrollTo(0, 0)
 
-    fetch(`http://localhost:8080/api/analyze/${encodeURIComponent(username)}`)
+    const headers = session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : undefined
+
+    fetch(`http://localhost:8080/api/analyze/${encodeURIComponent(username)}`, { headers })
       .then((res) => {
         if (!res.ok) {
           return res.json().catch(() => null).then((body) => {
@@ -61,7 +67,7 @@ export default function ReportPage() {
         )
         setLoading(false)
       })
-  }, [username])
+  }, [session?.access_token, username])
 
   const handleAnotherSearch = (e) => {
     e.preventDefault()
