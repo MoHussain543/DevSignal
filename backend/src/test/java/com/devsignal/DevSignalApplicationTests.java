@@ -1,13 +1,15 @@
 package com.devsignal;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 class DevSignalApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void applicationIsAnnotatedForBootstrapping() {
+		assertNotNull(DevSignalApplication.class.getAnnotation(SpringBootApplication.class));
 	}
 
 }

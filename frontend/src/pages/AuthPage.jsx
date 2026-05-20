@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LockKeyhole, Mail, Sparkles } from 'lucide-react'
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import { supabase } from '../lib/supabase.js'
+import { supabase, supabaseConfigured } from '../lib/supabase.js'
 
 const BENEFITS = [
   'Save your linked GitHub username',
@@ -36,6 +36,10 @@ export default function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!supabase) {
+      setError('Supabase auth is not configured in this local environment yet.')
+      return
+    }
     setSubmitting(true)
     setError('')
     setMessage('')
@@ -89,6 +93,11 @@ export default function AuthPage() {
                 Sign in to connect one GitHub profile to your account. This is the foundation for
                 a personal score, saved AI report state, and roadmap progress over time.
               </p>
+              {!supabaseConfigured ? (
+                <p className="auth-card-error auth-page-config-warning">
+                  Local auth is unavailable because the Supabase frontend environment variables are missing.
+                </p>
+              ) : null}
 
               <ul className="auth-page-benefits">
                 {BENEFITS.map((item) => (
@@ -158,7 +167,11 @@ export default function AuthPage() {
                   {error ? <p className="auth-card-error">{error}</p> : null}
                   {message ? <p className="auth-card-message">{message}</p> : null}
 
-                  <button type="submit" className="btn-primary auth-submit-btn" disabled={submitting}>
+                  <button
+                    type="submit"
+                    className="btn-primary auth-submit-btn"
+                    disabled={submitting || !supabaseConfigured}
+                  >
                     <Sparkles size={15} strokeWidth={1.8} aria-hidden />
                     {submitting
                       ? mode === 'signup'

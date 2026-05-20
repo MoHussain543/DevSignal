@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import { supabase } from '../lib/supabase.js'
+import { supabase, supabaseConfigured } from '../lib/supabase.js'
 
 function normalizeUsername(value) {
   return value.trim().replace(/^@/, '').toLowerCase()
@@ -107,7 +107,10 @@ export default function MyProfilePage() {
   )
 
   useEffect(() => {
-    if (!user?.id) return
+    if (!user?.id || !supabase) {
+      setLoading(false)
+      return
+    }
     let active = true
 
     async function loadProfile() {
@@ -140,7 +143,10 @@ export default function MyProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault()
-    if (!user?.id) return
+    if (!user?.id || !supabase) {
+      setError('Supabase auth is not configured in this local environment yet.')
+      return
+    }
 
     const trimmedDisplayName = displayName.trim()
     const trimmed = githubUsername.trim().replace(/^@/, '')
@@ -192,7 +198,9 @@ export default function MyProfilePage() {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     navigate('/', { replace: true })
   }
 
@@ -321,6 +329,11 @@ export default function MyProfilePage() {
               </div>
 
               <form className="my-profile-link-form" onSubmit={handleSave}>
+                {!supabaseConfigured ? (
+                  <p className="auth-card-error">
+                    Local account features are unavailable because the Supabase frontend environment variables are missing.
+                  </p>
+                ) : null}
                 <label className="auth-field">
                   <span className="auth-field-label">Display name</span>
                   <div className="auth-input-wrap">
@@ -353,7 +366,7 @@ export default function MyProfilePage() {
                 </label>
 
                 <div className="my-profile-link-actions">
-                  <button type="submit" className="btn-primary" disabled={saving}>
+                  <button type="submit" className="btn-primary" disabled={saving || !supabaseConfigured}>
                     <Sparkles size={14} strokeWidth={1.8} aria-hidden />
                     {saving ? 'Saving…' : 'Save linked profile'}
                   </button>

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabase, supabaseConfigured } from '../lib/supabase.js'
 
 const AuthContext = createContext(null)
 
@@ -9,6 +9,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!supabase) {
+      setSession(null)
+      setUser(null)
+      setLoading(false)
+      return undefined
+    }
+
     let active = true
 
     supabase.auth.getSession().then(({ data, error }) => {
@@ -41,6 +48,7 @@ export function AuthProvider({ children }) {
       user,
       loading,
       isAuthenticated: !!user,
+      authConfigured: supabaseConfigured,
     }),
     [loading, session, user],
   )

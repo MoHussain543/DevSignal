@@ -17,6 +17,8 @@ import com.devsignal.config.OpenAiProperties;
 import com.devsignal.dto.ai.AiReportResponseDto;
 import com.devsignal.dto.github.GitHubProfileDto;
 import com.devsignal.dto.github.GitHubRepoDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.devsignal.persistence.AnalysisRunRepository;
 
 class OpenAiReportServiceTest {
 
@@ -37,8 +39,12 @@ class OpenAiReportServiceTest {
 
 		GitHubAnalysisService analysisService =
 				new GitHubAnalysisService(new StubGitHubClient(profile, repos));
+		AnalysisRunRepository analysisRunRepository = new InMemoryAnalysisRunRepository();
+		AnalysisRunService analysisRunService =
+				new AnalysisRunService(analysisRunRepository, new ObjectMapper());
 		OpenAiProperties properties = new OpenAiProperties("", "gpt-5.4-mini", true);
-		OpenAiReportService reportService = new OpenAiReportService(analysisService, properties);
+		OpenAiReportService reportService =
+				new OpenAiReportService(analysisService, analysisRunService, properties);
 
 		AiReportResponseDto response = reportService.buildReport("octocat");
 
@@ -73,6 +79,69 @@ class OpenAiReportServiceTest {
 		@Override
 		public Optional<String> fetchRepositoryReadmeContent(String owner, String repoName) {
 			return Optional.empty();
+		}
+	}
+
+	private static class InMemoryAnalysisRunRepository implements AnalysisRunRepository {
+
+		@Override
+		public <S extends com.devsignal.persistence.AnalysisRun> S save(S entity) {
+			return entity;
+		}
+
+		@Override
+		public java.util.Optional<com.devsignal.persistence.AnalysisRun> findFirstByGithubUsernameNormalizedOrderByCreatedAtDesc(
+				String githubUsernameNormalized) {
+			return Optional.empty();
+		}
+
+		@Override
+		public java.util.Optional<com.devsignal.persistence.AnalysisRun> findByRunKey(java.util.UUID runKey) {
+			return Optional.empty();
+		}
+
+		@Override
+		public java.util.List<com.devsignal.persistence.AnalysisRun> findByGithubUsernameNormalizedOrderByCreatedAtDesc(
+				String githubUsernameNormalized) {
+			return List.of();
+		}
+
+		@Override public java.util.List<com.devsignal.persistence.AnalysisRun> findAll() { throw unsupported(); }
+		@Override public java.util.List<com.devsignal.persistence.AnalysisRun> findAllById(Iterable<java.util.UUID> ids) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> java.util.List<S> saveAll(Iterable<S> entities) { throw unsupported(); }
+		@Override public java.util.Optional<com.devsignal.persistence.AnalysisRun> findById(java.util.UUID uuid) { throw unsupported(); }
+		@Override public boolean existsById(java.util.UUID uuid) { throw unsupported(); }
+		@Override public long count() { throw unsupported(); }
+		@Override public void deleteById(java.util.UUID uuid) { throw unsupported(); }
+		@Override public void delete(com.devsignal.persistence.AnalysisRun entity) { throw unsupported(); }
+		@Override public void deleteAllById(Iterable<? extends java.util.UUID> ids) { throw unsupported(); }
+		@Override public void deleteAll(Iterable<? extends com.devsignal.persistence.AnalysisRun> entities) { throw unsupported(); }
+		@Override public void deleteAll() { throw unsupported(); }
+		@Override public void flush() { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> S saveAndFlush(S entity) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> java.util.List<S> saveAllAndFlush(Iterable<S> entities) { throw unsupported(); }
+		@Override public void deleteAllInBatch(Iterable<com.devsignal.persistence.AnalysisRun> entities) { throw unsupported(); }
+		@Override public void deleteAllByIdInBatch(Iterable<java.util.UUID> ids) { throw unsupported(); }
+		@Override public void deleteAllInBatch() { throw unsupported(); }
+		@Override public com.devsignal.persistence.AnalysisRun getOne(java.util.UUID uuid) { throw unsupported(); }
+		@Override public com.devsignal.persistence.AnalysisRun getById(java.util.UUID uuid) { throw unsupported(); }
+		@Override public com.devsignal.persistence.AnalysisRun getReferenceById(java.util.UUID uuid) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> java.util.Optional<S> findOne(org.springframework.data.domain.Example<S> example) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> java.util.List<S> findAll(org.springframework.data.domain.Example<S> example) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> java.util.List<S> findAll(org.springframework.data.domain.Example<S> example, org.springframework.data.domain.Sort sort) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> org.springframework.data.domain.Page<S> findAll(org.springframework.data.domain.Example<S> example, org.springframework.data.domain.Pageable pageable) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> long count(org.springframework.data.domain.Example<S> example) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun> boolean exists(org.springframework.data.domain.Example<S> example) { throw unsupported(); }
+		@Override public <S extends com.devsignal.persistence.AnalysisRun, R> R findBy(
+				org.springframework.data.domain.Example<S> example,
+				java.util.function.Function<org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+			throw unsupported();
+		}
+		@Override public java.util.List<com.devsignal.persistence.AnalysisRun> findAll(org.springframework.data.domain.Sort sort) { throw unsupported(); }
+		@Override public org.springframework.data.domain.Page<com.devsignal.persistence.AnalysisRun> findAll(org.springframework.data.domain.Pageable pageable) { throw unsupported(); }
+
+		private UnsupportedOperationException unsupported() {
+			return new UnsupportedOperationException("Not needed for this test");
 		}
 	}
 }
