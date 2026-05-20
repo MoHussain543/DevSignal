@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar.jsx'
 import LandingSections from '../components/LandingSections.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 export default function LandingPage() {
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
 
   const handleSearch = (username) => {
     const trimmed = username.trim()
@@ -20,6 +22,11 @@ export default function LandingPage() {
           </Link>
           <div className="header-sep" />
           <span className="header-tagline">GitHub Profile Analyzer</span>
+          <div className="site-header-actions">
+            <Link to={isAuthenticated ? '/me' : '/auth'} className="site-header-auth-link">
+              {isAuthenticated ? 'My DevSignal' : 'Sign in'}
+            </Link>
+          </div>
         </header>
 
         <main className="content">
