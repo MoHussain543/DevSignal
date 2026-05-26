@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import DevSignalLogo from './DevSignalLogo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 /** DevSignal brand only — used on report flows without top nav clutter. */
@@ -8,6 +9,7 @@ export default function MinimalSiteHeader() {
   return (
     <header className="site-header site-header--minimal">
       <Link to="/" className="header-brand-link">
+        <DevSignalLogo size="sm" />
         <span className="header-brand">DevSignal</span>
       </Link>
       <div className="site-header-actions">

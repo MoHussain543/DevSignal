@@ -45,9 +45,10 @@ public class RoadmapController {
 	public AiRoadmapResponseDto roadmap(
 			@PathVariable String username,
 			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+		SupabaseAuthService.AuthenticatedSupabaseUser user =
+				supabaseAuthService.requireAuthenticatedUser(authorizationHeader);
 		AiRoadmapResponseDto response = openAiRoadmapService.buildRoadmap(username);
-		supabaseAuthService.resolveAuthenticatedUser(authorizationHeader)
-				.ifPresent(user -> userProfileService.saveLatestRoadmap(user.id(), response.analysis(), response.roadmap()));
+		userProfileService.saveLatestRoadmap(user.id(), response.analysis(), response.roadmap());
 		return response;
 	}
 
@@ -55,14 +56,15 @@ public class RoadmapController {
 	public AnalysisJobAcceptedDto createRoadmapJob(
 			@PathVariable String username,
 			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-		UUID userId = supabaseAuthService.resolveAuthenticatedUser(authorizationHeader)
-				.map(SupabaseAuthService.AuthenticatedSupabaseUser::id)
-				.orElse(null);
+		UUID userId = supabaseAuthService.requireAuthenticatedUser(authorizationHeader).id();
 		return analysisJobService.startRoadmapJob(username, userId);
 	}
 
 	@GetMapping("/jobs/{runKey}")
-	public AiRoadmapJobStatusDto getRoadmapJob(@PathVariable UUID runKey) {
+	public AiRoadmapJobStatusDto getRoadmapJob(
+			@PathVariable UUID runKey,
+			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+		supabaseAuthService.requireAuthenticatedUser(authorizationHeader);
 		return analysisJobService.getRoadmapJob(runKey);
 	}
 }

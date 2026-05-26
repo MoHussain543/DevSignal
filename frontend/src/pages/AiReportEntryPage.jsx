@@ -98,7 +98,7 @@ export default function AiReportEntryPage() {
                 </form>
 
                 <p className="ai-entry-note">
-                  No account needed. Reads public data only.
+                  Sign in required. Reads public GitHub data only.
                 </p>
               </div>
             </div>

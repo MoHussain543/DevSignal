@@ -74,6 +74,13 @@ public class SupabaseAuthService {
 		}
 	}
 
+	public AuthenticatedSupabaseUser requireAuthenticatedUser(String authorizationHeader) {
+		return resolveAuthenticatedUser(authorizationHeader)
+				.orElseThrow(() -> new ResponseStatusException(
+						HttpStatus.UNAUTHORIZED,
+						"Sign in is required to use DevSignal AI features."));
+	}
+
 	private static String extractBearerToken(String authorizationHeader) {
 		String trimmed = authorizationHeader.strip();
 		if (!trimmed.regionMatches(true, 0, "Bearer ", 0, 7)) {

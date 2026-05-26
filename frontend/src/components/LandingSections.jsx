@@ -1,20 +1,21 @@
 import { Link } from 'react-router-dom'
 import RevealSection from './RevealSection.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import {
   Activity,
   AlertTriangle,
-  ArrowUpRight,
   BadgeCheck,
   BookOpen,
   CheckCircle2,
   Code2,
   FolderGit2,
+  HelpCircle,
   Map,
+  Search,
   Sparkles,
   Target,
   TrendingUp,
-  ListChecks,
-  Search,
+  Zap,
 } from 'lucide-react'
 
 const ANALYZES_FEATURES = [
@@ -56,6 +57,20 @@ const ANALYZES_FEATURES = [
   },
 ]
 
+const AI_REPORT_BENEFITS = [
+  { num: '01', text: 'Plain-English profile summary' },
+  { num: '02', text: 'Strengths and weaknesses explained clearly' },
+  { num: '03', text: 'Hiring-style impression' },
+  { num: '04', text: 'Personalized next steps' },
+]
+
+const ROADMAP_BENEFITS = [
+  { num: '01', text: 'Quick wins you can make this week' },
+  { num: '02', text: 'Skills to learn based on your real gaps' },
+  { num: '03', text: 'Tailored project ideas to improve hiring signal' },
+  { num: '04', text: 'Realistic 3-month improvement plan' },
+]
+
 const HOW_IT_WORKS = [
   {
     icon: Search,
@@ -92,6 +107,12 @@ const TONE_CLASS = {
 }
 
 export default function LandingSections() {
+  const { isAuthenticated } = useAuth()
+  const aiReportLink = isAuthenticated ? '/ai-report' : '/auth'
+  const aiReportLinkState = isAuthenticated ? undefined : { from: '/ai-report' }
+  const roadmapLink = isAuthenticated ? '/roadmap' : '/auth'
+  const roadmapLinkState = isAuthenticated ? undefined : { from: '/roadmap' }
+
   return (
     <div className="landing-sections landing-sections--preview-offset">
 
@@ -103,91 +124,162 @@ export default function LandingSections() {
           className="landing-block landing-analyze-anchor report-section-anchor"
           aria-labelledby="landing-analyze-heading"
         >
-          <div className="landing-section-header">
+          <div className="landing-section-header landing-section-header--analyze">
+            <span className="landing-section-eyebrow">
+              <FolderGit2 size={12} strokeWidth={1.8} aria-hidden />
+              Portfolio signals
+            </span>
             <h2 id="landing-analyze-heading" className="landing-section-title">
               What we analyze
             </h2>
-            <p className="landing-section-sub">
-              Six areas we look at using information GitHub already shows on profiles and repositories.
-              Your source code is not downloaded.
-            </p>
           </div>
 
-          <div className="analyzes-grid">
-            {ANALYZES_FEATURES.map(({ icon: Icon, title, desc, tone }) => (
-              <div key={title} className="analyzes-card">
-                <span className={`analyzes-card-icon section-icon-slot ${TONE_CLASS[tone]}`}>
-                  <Icon size={18} strokeWidth={1.75} aria-hidden />
-                </span>
-                <div className="analyzes-card-title">{title}</div>
-                <p className="analyzes-card-desc">{desc}</p>
+          <div className="analyze-spectrum">
+            <aside className="analyze-spectrum-aside" aria-hidden="false">
+              <div className="analyze-spectrum-hub" aria-hidden>
+                <span className="analyze-spectrum-hub-ring analyze-spectrum-hub-ring--outer" />
+                <span className="analyze-spectrum-hub-ring analyze-spectrum-hub-ring--inner" />
+                <div className="analyze-spectrum-hub-core">
+                  <div className="analyze-spectrum-hub-copy">
+                    <span className="analyze-spectrum-hub-num">6</span>
+                    <span className="analyze-spectrum-hub-label">
+                      <span>signal</span>
+                      <span>reads</span>
+                    </span>
+                  </div>
+                </div>
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <span
+                    key={i}
+                    className="analyze-spectrum-hub-dot"
+                    style={{ '--hub-i': i }}
+                  />
+                ))}
               </div>
-            ))}
+
+              <p className="analyze-spectrum-aside-lead">
+                We read what GitHub already shows publicly — repos, READMEs, activity, and portfolio patterns.
+              </p>
+              <p className="analyze-spectrum-aside-note">
+                No source download. No account connection. Each read below feeds one overall score.
+              </p>
+
+              <div className="analyze-spectrum-flow">
+                <span>Public profile</span>
+                <span className="analyze-spectrum-flow-arrow" aria-hidden>→</span>
+                <span className="analyze-spectrum-flow-accent">Six reads</span>
+                <span className="analyze-spectrum-flow-arrow" aria-hidden>→</span>
+                <span>One score</span>
+              </div>
+            </aside>
+
+            <ol className="analyze-spectrum-track">
+              {ANALYZES_FEATURES.map(({ icon: Icon, title, desc, tone }, index) => (
+                <li key={title} className="analyze-spectrum-item">
+                  <div className="analyze-spectrum-rail" aria-hidden>
+                    <span className="analyze-spectrum-rail-dot" />
+                    {index < ANALYZES_FEATURES.length - 1 ? (
+                      <span className="analyze-spectrum-rail-line" />
+                    ) : null}
+                  </div>
+
+                  <div className="analyze-spectrum-item-body">
+                    <span className="analyze-spectrum-item-index" aria-hidden>
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className={`analyze-spectrum-item-icon section-icon-slot ${TONE_CLASS[tone]}`}>
+                      <Icon size={17} strokeWidth={1.75} aria-hidden />
+                    </span>
+                    <div className="analyze-spectrum-item-copy">
+                      <h3 className="analyze-spectrum-item-title">{title}</h3>
+                      <p className="analyze-spectrum-item-desc">{desc}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
       </RevealSection>
 
       {/* ── How It Works ── */}
       <RevealSection delay={40}>
-        <section className="landing-block">
-          <div className="landing-section-header">
-            <h2 className="landing-section-title">How it works</h2>
-            <p className="landing-section-sub">
-              Three steps from username to a finished report.
-            </p>
+        <section className="landing-block" aria-labelledby="landing-hiw-heading">
+          <div className="landing-section-header landing-section-header--hiw">
+            <span className="landing-section-eyebrow">
+              <TrendingUp size={12} strokeWidth={1.8} aria-hidden />
+              Simple flow
+            </span>
+            <h2 id="landing-hiw-heading" className="landing-section-title">
+              How it works
+            </h2>
           </div>
 
-          <div className="hiw-shell">
-            <div className="hiw-shell-head">
-              <span className="hiw-shell-kicker">Simple flow</span>
-              <p className="hiw-shell-copy">
-                DevSignal turns one public username into a report without asking you to connect accounts,
-                install anything, or prep your repositories first.
-              </p>
-            </div>
+          <div className="hiw-flow">
+            <p className="hiw-flow-lead">
+              Paste one public GitHub username and get a finished portfolio readout. No account connection, no repo prep, and no installation required.
+            </p>
 
-            <div className="hiw-steps">
-              {HOW_IT_WORKS.map(({ icon: Icon, step, label, title, desc, points }) => (
-                <div key={step} className="hiw-step">
-                  <div className="hiw-step-top">
-                    <span className="hiw-step-icon section-icon-slot section-icon-tone-mag">
-                      <Icon size={16} strokeWidth={1.9} aria-hidden />
+            <div className="hiw-flow-lanes">
+              {HOW_IT_WORKS.map(({ icon: Icon, step, label, title, desc, points }, index) => (
+                <div
+                  key={step}
+                  className={`hiw-flow-lane hiw-flow-lane--${index + 1}`}
+                >
+                  <div className="hiw-flow-lane-rail" aria-hidden>
+                    <span className="hiw-flow-lane-node">
+                      <span className="hiw-flow-lane-step">{step}</span>
                     </span>
-                    <div className="hiw-step-meta">
-                      <span className="hiw-step-num">{step}</span>
-                      <span className="hiw-step-label">{label}</span>
-                    </div>
+                    {index < HOW_IT_WORKS.length - 1 ? (
+                      <span className="hiw-flow-lane-spine" />
+                    ) : null}
                   </div>
-                  <div className="hiw-step-title">{title}</div>
-                  <p className="hiw-step-desc">{desc}</p>
-                  <ul className="hiw-step-points" aria-label={`${title} details`}>
-                    {points.map((point) => (
-                      <li key={point}>
-                        <span className="hiw-step-point-dot" aria-hidden />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                  <div className="hiw-flow-lane-content">
+                    <div className="hiw-flow-lane-header">
+                      <span className={`hiw-flow-lane-icon section-icon-slot section-icon-tone-${index === 0 ? 'violet' : index === 1 ? 'mag' : 'pos'}`}>
+                        <Icon size={16} strokeWidth={1.85} aria-hidden />
+                      </span>
+                      <div className="hiw-flow-lane-meta">
+                        <span className="hiw-flow-lane-label">{label}</span>
+                        <h3 className="hiw-flow-lane-title">{title}</h3>
+                      </div>
+                    </div>
+                    <p className="hiw-flow-lane-desc">{desc}</p>
+                    <ul className="hiw-flow-lane-points">
+                      {points.map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               ))}
+            </div>
+
+            <div className="hiw-flow-terminal" aria-hidden>
+              <span className="hiw-flow-terminal-prompt">$</span>
+              <span className="hiw-flow-terminal-cmd">devsignal analyze</span>
+              <span className="hiw-flow-terminal-arg">@username</span>
+              <span className="hiw-flow-terminal-arrow">→</span>
+              <span className="hiw-flow-terminal-out">report ready</span>
             </div>
           </div>
         </section>
       </RevealSection>
 
-      {/* ── Coming Features divider ── */}
+      {/* ── More features intro ── */}
       <RevealSection>
-        <div className="landing-coming-divider" aria-hidden>
-          <div className="landing-coming-divider-line" />
-          <span className="landing-coming-divider-label">
-            <Sparkles size={11} strokeWidth={1.8} />
-            Coming Features
-          </span>
-          <div className="landing-coming-divider-line" />
+        <div id="section-beyond-score" className="landing-features-intro">
+          <p className="landing-features-intro-kicker">Beyond the score</p>
+          <div className="landing-features-intro-rule">
+            <span className="landing-features-intro-dot landing-features-intro-dot--ai" />
+            <span className="landing-features-intro-line" />
+            <span className="landing-features-intro-dot landing-features-intro-dot--roadmap" />
+          </div>
         </div>
       </RevealSection>
 
-      {/* ── AI Report Summary (Coming Soon preview) ── */}
+      {/* ── AI Report Summary ── */}
       <RevealSection>
         <section
           id="section-ai-summary"
@@ -195,9 +287,8 @@ export default function LandingSections() {
           className="landing-block feature-scope-ai-report"
           aria-labelledby="landing-ai-heading"
         >
-          <div className="landing-feature-split">
+          <div className="landing-feature-showcase">
 
-            {/* Copy column */}
             <div className="landing-feature-copy">
               <div className="landing-section-eyebrow landing-section-eyebrow--live">
                 <Sparkles size={12} strokeWidth={1.8} aria-hidden />
@@ -209,55 +300,87 @@ export default function LandingSections() {
               <p className="landing-feature-sub">
                 Turn raw GitHub signals into a clear, human-readable portfolio review.
               </p>
-              <ul className="landing-feature-bullets" aria-label="Feature highlights">
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Plain-English profile summary</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Strengths and weaknesses explained clearly</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Hiring-style impression</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Personalized next steps</li>
-              </ul>
-              <Link to="/ai-report" className="btn-primary landing-feature-cta">
+              <ol className="landing-feature-benefits" aria-label="Feature highlights">
+                {AI_REPORT_BENEFITS.map((item) => (
+                  <li key={item.num}>
+                    <span className="landing-feature-benefit-num" aria-hidden>{item.num}</span>
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ol>
+              <Link
+                to={aiReportLink}
+                state={aiReportLinkState}
+                className="btn-primary landing-feature-cta"
+              >
                 <Sparkles size={14} strokeWidth={1.8} aria-hidden />
                 Try AI Report
               </Link>
             </div>
 
-            {/* Preview card column */}
-            <div className="landing-preview-card-col">
-              <div className="card card-gradient-edge-sm landing-preview-card">
+            <div className="landing-feature-mock-col">
+              <div className="feature-visual feature-visual--ai-synth" aria-hidden>
+                <div className="ai-synth-scene">
+                  <div className="ai-synth-raw">
+                    <span className="ai-synth-chip">spring-api</span>
+                    <span className="ai-synth-chip">TypeScript</span>
+                    <span className="ai-synth-chip ai-synth-chip--dim">12 public repos</span>
+                    <div className="ai-synth-activity" aria-hidden>
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                      <span className="ai-synth-activity--dim" />
+                    </div>
+                  </div>
 
-                <div className="landing-preview-card-header">
-                  <span className="section-icon-slot section-icon-tone-ai-report" aria-hidden>
-                    <Sparkles size={16} strokeWidth={1.75} />
-                  </span>
-                  <span className="landing-preview-card-name">AI Report Summary</span>
-                  <span className="badge badge-violet badge-ai-report">Preview</span>
+                  <svg className="ai-synth-funnel" viewBox="0 0 420 360" preserveAspectRatio="none" aria-hidden>
+                    <path d="M 68 72 Q 148 108, 210 132" />
+                    <path d="M 168 68 Q 198 104, 210 132" />
+                    <path d="M 292 76 Q 248 108, 210 132" />
+                  </svg>
+
+                  <div className="ai-synth-spark" aria-hidden>
+                    <Sparkles size={15} strokeWidth={1.85} />
+                  </div>
+
+                  <div className="ai-synth-readout">
+                    <div className="ai-synth-stats">
+                      <div className="ai-synth-stat">
+                        <span className="ai-synth-stat-label">Overall read</span>
+                        <span className="ai-synth-stat-value">Promising</span>
+                      </div>
+                      <div className="ai-synth-stat">
+                        <span className="ai-synth-stat-label">Hiring signal</span>
+                        <span className="ai-synth-stat-value">Moderate</span>
+                      </div>
+                      <div className="ai-synth-stat">
+                        <span className="ai-synth-stat-label">Main gap</span>
+                        <span className="ai-synth-stat-value ai-synth-stat-value--warn">README depth</span>
+                      </div>
+                    </div>
+
+                    <p className="ai-synth-lead">
+                      Active backend work — stronger with clearer setup docs on your top repos.
+                    </p>
+
+                    <ul className="ai-synth-evidence">
+                      <li className="ai-synth-evidence-item ai-synth-evidence-item--positive">
+                        <CheckCircle2 size={12} strokeWidth={2} aria-hidden />
+                        Steady project velocity
+                      </li>
+                      <li className="ai-synth-evidence-item ai-synth-evidence-item--warning">
+                        <AlertTriangle size={12} strokeWidth={2} aria-hidden />
+                        Thin documentation signal
+                      </li>
+                      <li className="ai-synth-evidence-item ai-synth-evidence-item--missing">
+                        <HelpCircle size={12} strokeWidth={2} aria-hidden />
+                        Missing test evidence
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-
-                <div className="landing-preview-quote">
-                  <span className="landing-preview-quote-label">Overall Impression</span>
-                  <p className="landing-preview-quote-text">
-                    "This profile shows active project work and promising backend signals, but would
-                    be stronger with clearer README files, setup instructions, and more polished
-                    portfolio repositories."
-                  </p>
-                </div>
-
-                <div className="landing-preview-mini-grid">
-                  <div className="landing-preview-mini-item signal-item signal-green">
-                    <CheckCircle2 size={12} strokeWidth={2} aria-hidden /> Main strengths identified
-                  </div>
-                  <div className="landing-preview-mini-item signal-item signal-yellow">
-                    <AlertTriangle size={12} strokeWidth={2} aria-hidden /> Weak spots noted
-                  </div>
-                  <div className="landing-preview-mini-item landing-preview-mini-violet">
-                    <ListChecks size={12} strokeWidth={2} aria-hidden /> What to fix first
-                  </div>
-                  <div className="landing-preview-mini-item landing-preview-mini-violet">
-                    <ArrowUpRight size={12} strokeWidth={2} aria-hidden /> Hiring-style impression
-                  </div>
-                </div>
-
-                <p className="landing-preview-card-note">Sample output — not real data</p>
+                <p className="feature-visual-caption">Raw GitHub signals, distilled into a clear read</p>
               </div>
             </div>
 
@@ -265,7 +388,7 @@ export default function LandingSections() {
         </section>
       </RevealSection>
 
-      {/* ── Improvement Roadmap (Coming Soon preview) ── */}
+      {/* ── AI Roadmap ── */}
       <RevealSection>
         <section
           id="section-roadmap"
@@ -273,63 +396,65 @@ export default function LandingSections() {
           className="landing-block feature-scope-roadmap"
           aria-labelledby="landing-roadmap-heading"
         >
-          <div className="landing-feature-split landing-feature-split--reverse">
+          <div className="landing-feature-showcase landing-feature-showcase--reverse">
 
-            {/* Preview card column (left on desktop) */}
-            <div className="landing-preview-card-col">
-              <div className="card card-gradient-edge-sm landing-preview-card">
+            <div className="landing-feature-mock-col">
+              <div className="feature-visual feature-visual--roadmap-trail" aria-hidden>
+                <div className="roadmap-trail-scene">
+                  <svg className="roadmap-trail-svg" viewBox="0 0 420 360" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="roadmap-trail-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="rgba(124, 58, 237, 0.2)" />
+                        <stop offset="100%" stopColor="rgba(165, 180, 252, 0.5)" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      className="roadmap-trail-path-glow"
+                      d="M 56 288 C 98 258, 128 218, 162 176 S 248 98, 302 64 S 342 40, 358 32"
+                    />
+                    <path
+                      className="roadmap-trail-path"
+                      d="M 56 288 C 98 258, 128 218, 162 176 S 248 98, 302 64 S 342 40, 358 32"
+                    />
+                    <circle className="roadmap-trail-dot" cx="56" cy="288" r="5" />
+                    <circle className="roadmap-trail-dot" cx="162" cy="176" r="5" />
+                    <circle className="roadmap-trail-dot roadmap-trail-dot--end" cx="358" cy="32" r="6" />
+                  </svg>
 
-                <div className="landing-preview-card-header">
-                  <span className="section-icon-slot section-icon-tone-roadmap" aria-hidden>
-                    <Map size={16} strokeWidth={1.75} />
-                  </span>
-                  <span className="landing-preview-card-name">Improvement Roadmap</span>
-                  <span className="badge badge-violet badge-roadmap">Preview</span>
+                  <div className="roadmap-trail-node roadmap-trail-node--start">
+                    <span className="roadmap-trail-node-pin" aria-hidden>
+                      <Zap size={13} strokeWidth={2.2} />
+                    </span>
+                    <div className="roadmap-trail-node-copy-block">
+                      <span className="roadmap-trail-node-phase">Week 1</span>
+                      <span className="roadmap-trail-node-label">Quick wins</span>
+                    </div>
+                  </div>
+
+                  <div className="roadmap-trail-node roadmap-trail-node--mid">
+                    <span className="roadmap-trail-node-pin" aria-hidden>
+                      <BookOpen size={13} strokeWidth={2.2} />
+                    </span>
+                    <div className="roadmap-trail-node-copy-block">
+                      <span className="roadmap-trail-node-phase">Month 1</span>
+                      <span className="roadmap-trail-node-label">TypeScript · Testing</span>
+                    </div>
+                  </div>
+
+                  <div className="roadmap-trail-node roadmap-trail-node--end">
+                    <span className="roadmap-trail-node-pin" aria-hidden>
+                      <Target size={13} strokeWidth={2.2} />
+                    </span>
+                    <div className="roadmap-trail-node-copy-block">
+                      <span className="roadmap-trail-node-phase">Month 3</span>
+                      <span className="roadmap-trail-node-label">Ship flagship project</span>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="landing-roadmap-phases">
-
-                  <div className="landing-roadmap-phase">
-                    <div className="landing-roadmap-phase-header">
-                      <Target size={13} strokeWidth={2} aria-hidden />
-                      Quick Wins
-                    </div>
-                    <ul className="landing-roadmap-phase-list">
-                      <li>Add setup instructions to your top repositories</li>
-                      <li>Add screenshots to README files</li>
-                      <li>Write clearer project descriptions</li>
-                    </ul>
-                  </div>
-
-                  <div className="landing-roadmap-phase">
-                    <div className="landing-roadmap-phase-header landing-roadmap-phase-header--impact">
-                      <ArrowUpRight size={13} strokeWidth={2} aria-hidden />
-                      Highest-Impact Fixes
-                    </div>
-                    <ul className="landing-roadmap-phase-list">
-                      <li>Build one original full-stack project</li>
-                      <li>Add tests or deployment notes</li>
-                      <li>Improve documentation for your strongest repo</li>
-                    </ul>
-                  </div>
-
-                  <div className="landing-roadmap-phase">
-                    <div className="landing-roadmap-phase-header landing-roadmap-phase-header--direction">
-                      <Map size={13} strokeWidth={2} aria-hidden />
-                      Next Project Direction
-                    </div>
-                    <ul className="landing-roadmap-phase-list">
-                      <li>Create a backend-heavy project with API, database, authentication, and deployment</li>
-                    </ul>
-                  </div>
-
-                </div>
-
-                <p className="landing-preview-card-note">Sample roadmap — not real data</p>
+                <p className="feature-visual-caption">A step-by-step path, not another scorecard</p>
               </div>
             </div>
 
-            {/* Copy column (right on desktop) */}
             <div className="landing-feature-copy">
               <div className="landing-section-eyebrow landing-section-eyebrow--live">
                 <Map size={12} strokeWidth={1.8} aria-hidden />
@@ -341,13 +466,19 @@ export default function LandingSections() {
               <p className="landing-feature-sub">
                 Build a clearer path to a stronger GitHub portfolio — tailored to your actual work.
               </p>
-              <ul className="landing-feature-bullets" aria-label="Feature highlights">
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Quick wins you can make this week</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Skills to learn based on your real gaps</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Tailored project ideas to improve hiring signal</li>
-                <li><CheckCircle2 size={13} strokeWidth={2} aria-hidden /> Realistic 3-month improvement plan</li>
-              </ul>
-              <Link to="/roadmap" className="btn-primary landing-feature-cta">
+              <ol className="landing-feature-benefits" aria-label="Feature highlights">
+                {ROADMAP_BENEFITS.map((item) => (
+                  <li key={item.num}>
+                    <span className="landing-feature-benefit-num" aria-hidden>{item.num}</span>
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ol>
+              <Link
+                to={roadmapLink}
+                state={roadmapLinkState}
+                className="btn-primary landing-feature-cta"
+              >
                 <Map size={14} strokeWidth={1.8} aria-hidden />
                 Generate My Roadmap
               </Link>

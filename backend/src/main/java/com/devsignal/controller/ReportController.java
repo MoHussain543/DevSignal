@@ -45,9 +45,10 @@ public class ReportController {
 	public AiReportResponseDto report(
 			@PathVariable String username,
 			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+		SupabaseAuthService.AuthenticatedSupabaseUser user =
+				supabaseAuthService.requireAuthenticatedUser(authorizationHeader);
 		AiReportResponseDto response = openAiReportService.buildReport(username);
-		supabaseAuthService.resolveAuthenticatedUser(authorizationHeader)
-				.ifPresent(user -> userProfileService.saveLatestAiReport(user.id(), response.analysis(), response.aiSummary()));
+		userProfileService.saveLatestAiReport(user.id(), response.analysis(), response.aiSummary());
 		return response;
 	}
 
@@ -55,14 +56,15 @@ public class ReportController {
 	public AnalysisJobAcceptedDto createReportJob(
 			@PathVariable String username,
 			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-		UUID userId = supabaseAuthService.resolveAuthenticatedUser(authorizationHeader)
-				.map(SupabaseAuthService.AuthenticatedSupabaseUser::id)
-				.orElse(null);
+		UUID userId = supabaseAuthService.requireAuthenticatedUser(authorizationHeader).id();
 		return analysisJobService.startReportJob(username, userId);
 	}
 
 	@GetMapping("/jobs/{runKey}")
-	public AiReportJobStatusDto getReportJob(@PathVariable UUID runKey) {
+	public AiReportJobStatusDto getReportJob(
+			@PathVariable UUID runKey,
+			@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+		supabaseAuthService.requireAuthenticatedUser(authorizationHeader);
 		return analysisJobService.getReportJob(runKey);
 	}
 }

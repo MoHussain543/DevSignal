@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Search,
-  Sparkles,
-  Terminal,
-  TrendingUp,
-} from 'lucide-react'
+import DevSignalLogo from './DevSignalLogo.jsx'
+import { Search, Sparkles, Terminal } from 'lucide-react'
 
 function randomGithubPlaceholder() {
   const stem = ['nova', 'orbit', 'flux', 'delta', 'vertex', 'signal'][Math.floor(Math.random() * 6)]
@@ -46,7 +40,7 @@ export default function SearchBar({ onSearch, loading }) {
   }
 
   const scrollToFeatures = () => {
-    document.getElementById('section-ai-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById('section-beyond-score')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -126,65 +120,12 @@ export default function SearchBar({ onSearch, loading }) {
           </p>
         </div>
 
-        {/* ── Right column: intelligence pipeline scene ── */}
-        <div className="hero-scene-col" aria-hidden>
-          <div className="hero-scene">
-
-            {/* Wide atmosphere glow — no bounding box */}
-            <div className="hero-scene-glow" />
-
-            {/* ── Layer 1: GitHub profile input ── */}
-            <div className="hero-scene-input-row">
-              <div className="hero-scene-input-chip">
-                <span className="hero-scene-input-prompt">$</span>
-                <span className="hero-scene-input-cmd">&nbsp;devsignal analyze&nbsp;</span>
-                <span className="hero-scene-input-user">vertex-dev</span>
-                <span className="hero-scene-cursor" />
-              </div>
-            </div>
-
-            {/* Wire: input → nodes */}
-            <div className="hero-scene-wire" />
-
-            {/* ── Layer 2: Five analysis signal nodes ── */}
-            <div className="hero-scene-nodes">
-              <span className="hero-scene-node" style={{ animationDelay: '0s' }}>Repo quality</span>
-              <span className="hero-scene-node" style={{ animationDelay: '0.45s' }}>README depth</span>
-              <span className="hero-scene-node" style={{ animationDelay: '0.9s' }}>Languages</span>
-              <span className="hero-scene-node" style={{ animationDelay: '1.35s' }}>Original work</span>
-              <span className="hero-scene-node" style={{ animationDelay: '1.8s' }}>Activity</span>
-            </div>
-
-            {/* Wire: nodes → score */}
-            <div className="hero-scene-wire" />
-
-            {/* ── Layer 3: Score ring + floating output badges ── */}
-            <div className="hero-scene-score-section">
-
-              {/* Badges floating around the ring — absolutely positioned */}
-              <div className="hero-scene-badge hero-scene-badge--green">
-                <CheckCircle2 size={10} strokeWidth={2} /> Promising signal
-              </div>
-              <div className="hero-scene-badge hero-scene-badge--violet">
-                <TrendingUp size={10} strokeWidth={2} /> Backend-heavy
-              </div>
-              <div className="hero-scene-badge hero-scene-badge--yellow">
-                <AlertTriangle size={10} strokeWidth={2} /> README gaps
-              </div>
-
-              {/* Dominant score ring */}
-              <div className="hero-scene-ring">
-                <div className="hero-scene-ring-inner">
-                  <span className="hero-scene-ring-num">82</span>
-                  <span className="hero-scene-ring-denom">/100</span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Footer label */}
-            <div className="hero-scene-footer">DevSignal · Analysis Complete</div>
-
+        {/* ── Right column: brand mark ── */}
+        <div className="hero-logo-col" aria-hidden>
+          <div className="hero-logo-wrap">
+            <div className="hero-logo-glow" />
+            <DevSignalLogo size="hero" showWordmark />
+            <p className="hero-logo-caption">Six reads · one score · clearer hiring signal</p>
           </div>
         </div>
 

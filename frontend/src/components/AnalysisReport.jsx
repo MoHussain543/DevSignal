@@ -1,26 +1,24 @@
 import RepoCard from './RepoCard.jsx'
 import RevealSection from './RevealSection.jsx'
-import SectionHeading from './SectionHeading.jsx'
 import {
   Activity,
   BarChart3,
   FolderGit2,
-  Gauge,
   Radar,
   TrendingUp,
 } from 'lucide-react'
 
 function scoreColor(score) {
-  if (score >= 85) return 'var(--accent-primary-hover)'
-  if (score >= 70) return 'var(--accent-primary)'
+  if (score >= 85) return 'var(--flow-accent-hover)'
+  if (score >= 70) return 'var(--flow-accent)'
   if (score >= 50) return 'rgba(139, 92, 246, 0.72)'
-  return 'rgba(236, 72, 153, 0.65)'
+  return 'rgba(139, 92, 246, 0.55)'
 }
 
 function ScoreRing({ score }) {
   const color = scoreColor(score)
   return (
-    <div className="score-ring-wrap" style={{ '--score': score, '--ring-color': color }}>
+    <div className="score-ring-wrap flow-score-ring" style={{ '--score': score, '--ring-color': color }}>
       <div className="score-inner">
         <span className="score-num">{score}</span>
         <span className="score-denom">/100</span>
@@ -30,13 +28,6 @@ function ScoreRing({ score }) {
 }
 
 function CandidateBadge({ level }) {
-  const slug = level.includes('Strong')
-    ? 'strong'
-    : level.includes('Promising')
-      ? 'promising'
-      : level.includes('Developing')
-        ? 'developing'
-        : 'early'
   const cls = {
     'Strong portfolio signal': 'badge-green',
     'Promising portfolio signal': 'badge-violet',
@@ -44,22 +35,18 @@ function CandidateBadge({ level }) {
     'Early-stage portfolio': 'badge-orange',
   }[level] || 'badge-gray'
 
-  return (
-    <div className={`candidate-badge-shell halo-${slug}`}>
-      <span className={`badge badge-candidate ${cls}`}>{level}</span>
-    </div>
-  )
+  return <span className={`badge badge-candidate ${cls}`}>{level}</span>
 }
 
 function ProgressBar({ label, value, max = 100, color, weighted }) {
   const pct = Math.min(100, Math.round((value / max) * 100))
   return (
-    <div className="progress-row">
+    <div className="progress-row flow-progress-row">
       <span className="progress-label">{label}</span>
       <div className="progress-track">
         <div
           className={`progress-fill ${weighted ? 'progress-fill--weighted' : ''}`}
-          style={{ width: `${pct}%`, background: color || 'var(--accent-primary)' }}
+          style={{ width: `${pct}%`, background: color || 'var(--flow-accent)' }}
         />
       </div>
       <span className="progress-value">
@@ -68,6 +55,14 @@ function ProgressBar({ label, value, max = 100, color, weighted }) {
     </div>
   )
 }
+
+const SUMMARY_DIMENSIONS = [
+  { key: 'projectQualityExplanation', label: 'Project quality' },
+  { key: 'technicalBreadthExplanation', label: 'Technology variety' },
+  { key: 'documentationExplanation', label: 'README & documentation' },
+  { key: 'originalityExplanation', label: 'Original project work' },
+  { key: 'activityExplanation', label: 'Recent activity' },
+]
 
 export default function AnalysisReport({ data }) {
   const {
@@ -90,6 +85,14 @@ export default function AnalysisReport({ data }) {
     repos,
   } = data
 
+  const explanations = {
+    projectQualityExplanation,
+    technicalBreadthExplanation,
+    documentationExplanation,
+    originalityExplanation,
+    activityExplanation,
+  }
+
   const spotlightRepo = featuredRepo ?? null
   const otherRepos = spotlightRepo
     ? repos.filter((r) => r.name !== spotlightRepo.name)
@@ -97,98 +100,92 @@ export default function AnalysisReport({ data }) {
 
   return (
     <div className="report">
-
-      {/* Analysis stack: profile → overall score → summary → breakdown */}
       <section id="section-analysis" data-nav-section="analysis" className="report-section-anchor">
-        <div className="report-analysis-suite">
+        <div className="flow-doc flow-doc--analyzer">
+
           <RevealSection>
-            <div className="card profile-card profile-card-shell card-gradient-edge-sm">
-              <SectionHeading title="Profile" icon={Gauge} tone="violet" />
-              <div className="profile-card-body">
-                {avatarUrl ? <img className="avatar" src={avatarUrl} alt="" /> : null}
-                <div className="profile-info">
-                  <h2 className="profile-name">{name || username}</h2>
-                  <p className="profile-username">@{username}</p>
-                  {bio ? <p className="profile-bio">{bio}</p> : null}
-                  <div className="profile-stats">
-                    <span className="stat"><strong>{followers.toLocaleString()}</strong> followers</span>
-                    <span className="stat-sep">·</span>
-                    <span className="stat"><strong>{publicRepos}</strong> public repos</span>
-                    <span className="stat-sep">·</span>
-                    <span className="stat"><strong>{portfolioRepoCount}</strong> portfolio repos</span>
-                  </div>
-                  {portfolioTopLanguages?.length > 0 ? (
-                    <div className="lang-badges">
-                      {portfolioTopLanguages.map(lang => (
-                        <span key={lang} className="badge badge-lang">{lang}</span>
-                      ))}
-                    </div>
-                  ) : null}
+            <header className="flow-profile-band">
+              {avatarUrl ? <img className="flow-profile-avatar" src={avatarUrl} alt="" /> : null}
+              <div className="flow-profile-copy">
+                <h2 className="flow-profile-name">{name || username}</h2>
+                <p className="flow-profile-handle">@{username}</p>
+                {bio ? <p className="flow-profile-bio">{bio}</p> : null}
+                <div className="flow-profile-stats">
+                  <span><strong>{followers.toLocaleString()}</strong> followers</span>
+                  <span className="flow-profile-stat-sep" aria-hidden>·</span>
+                  <span><strong>{publicRepos}</strong> public repos</span>
+                  <span className="flow-profile-stat-sep" aria-hidden>·</span>
+                  <span><strong>{portfolioRepoCount}</strong> portfolio repos</span>
                 </div>
+                {portfolioTopLanguages?.length > 0 ? (
+                  <div className="lang-badges flow-profile-langs">
+                    {portfolioTopLanguages.map((lang) => (
+                      <span key={lang} className="badge badge-lang">{lang}</span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-          </div>
+            </header>
           </RevealSection>
 
           <RevealSection delay={40}>
-            <div className="card-row report-analysis-feature-row">
-              <div className="card score-card card-gradient-edge score-card--featured">
-                <SectionHeading title="Overall Score" icon={Radar} tone="violet" titleClassName="card-title--lead" />
+            <div className="flow-score-band">
+              <div className="flow-score-main">
                 <ScoreRing score={score} />
-                <div className="score-meta">
+                <div className="flow-score-meta">
+                  <span className="flow-section-eyebrow">
+                    <Radar size={13} strokeWidth={1.75} aria-hidden />
+                    Overall score
+                  </span>
                   <CandidateBadge level={candidateLevel} />
-                  <p className="recommendation recommendation--featured">{hiringRecommendation}</p>
+                  <p className="flow-score-rec">{hiringRecommendation}</p>
                 </div>
               </div>
-
-              <div className="card card--quiet">
-                <SectionHeading title="Portfolio metrics" icon={Activity} tone="violet" />
-                <div className="portfolio-stats">
-                  <Stat label="Repos reviewed" value={analyzedRepoCount} />
-                  <Stat label="Original repos" value={originalRepoCount} />
-                  <Stat label="Portfolio repos" value={portfolioRepoCount} />
-                  <Stat label="Total stars" value={portfolioTotalStars} />
-                  <Stat label="Total forks" value={portfolioTotalForks} />
-                  <Stat label="Average repo quality" value={portfolioAverageRepoScore} suffix="/100" />
-                </div>
+              <div className="flow-metrics-grid">
+                <Stat label="Repos reviewed" value={analyzedRepoCount} />
+                <Stat label="Original repos" value={originalRepoCount} />
+                <Stat label="Portfolio repos" value={portfolioRepoCount} />
+                <Stat label="Total stars" value={portfolioTotalStars} />
+                <Stat label="Total forks" value={portfolioTotalForks} />
+                <Stat label="Avg repo quality" value={portfolioAverageRepoScore} suffix="/100" />
               </div>
             </div>
           </RevealSection>
 
           <RevealSection delay={30}>
-            <div className="card evaluation-summary-card evaluation-summary-card--editorial">
-              <SectionHeading icon={BarChart3} tone="violet" title="Profile Summary" titleClassName="card-title--lead" />
-              <p className="evaluation-summary-lead">{scoreExplanation}</p>
-              <div className="evaluation-mini-grid">
-              <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Project quality</div>
-                <p className="evaluation-mini-body">{projectQualityExplanation}</p>
+            <section className="flow-section" aria-labelledby="report-summary-heading">
+              <div className="flow-section-head">
+                <span className="flow-section-icon" aria-hidden>
+                  <BarChart3 size={16} strokeWidth={1.75} />
+                </span>
+                <div>
+                  <span className="flow-section-eyebrow">Summary</span>
+                  <h2 id="report-summary-heading" className="flow-section-title">Profile read</h2>
+                </div>
               </div>
-              <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Technology variety</div>
-                <p className="evaluation-mini-body">{technicalBreadthExplanation}</p>
+              <p className="flow-lead">{scoreExplanation}</p>
+              <div className="flow-rows">
+                {SUMMARY_DIMENSIONS.map(({ key, label }) => (
+                  <div key={key} className="flow-row">
+                    <span className="flow-row-label">{label}</span>
+                    <p className="flow-row-text">{explanations[key]}</p>
+                  </div>
+                ))}
               </div>
-              <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">README & documentation</div>
-                <p className="evaluation-mini-body">{documentationExplanation}</p>
-              </div>
-              <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Original project work</div>
-                <p className="evaluation-mini-body">{originalityExplanation}</p>
-              </div>
-              <div className="evaluation-mini-card">
-                <div className="evaluation-mini-label">Recent activity</div>
-                <p className="evaluation-mini-body">{activityExplanation}</p>
-              </div>
-            </div>
-          </div>
+            </section>
           </RevealSection>
 
           <RevealSection delay={50}>
-            <div className="card-row report-breakdown-row">
-              <div className="card card--stat">
-                <SectionHeading icon={BarChart3} tone="violet" title="How Your Score Is Built" />
-                <p className="text-muted breakdown-panel-hint">
-                  Each category is scored out of 100. This shows where the profile is strong or soft before those scores turn into points.
+            <section className="flow-section flow-section--split" aria-label="Score breakdown">
+              <div className="flow-split-col">
+                <div className="flow-section-head flow-section-head--compact">
+                  <span className="flow-section-icon" aria-hidden>
+                    <BarChart3 size={16} strokeWidth={1.75} />
+                  </span>
+                  <h3 className="flow-section-title">How your score is built</h3>
+                </div>
+                <p className="flow-section-hint">
+                  Each category is scored out of 100 before contributing to your final score.
                 </p>
                 <div className="breakdown">
                   <ProgressBar label="Project quality" value={scoreBreakdown.projectQualityScore} />
@@ -198,77 +195,51 @@ export default function AnalysisReport({ data }) {
                   <ProgressBar label="Original project work" value={scoreBreakdown.originalityScore} />
                 </div>
               </div>
-
-              <div className="card card--stat">
-                <SectionHeading icon={TrendingUp} tone="violet" title="Points Earned" />
-                <p className="text-muted breakdown-panel-hint">
-                  Each category contributes a different slice to your final score (shown on the left as overall score).
+              <div className="flow-split-col">
+                <div className="flow-section-head flow-section-head--compact">
+                  <span className="flow-section-icon flow-section-icon--trim" aria-hidden>
+                    <TrendingUp size={16} strokeWidth={1.75} />
+                  </span>
+                  <h3 className="flow-section-title">Points earned</h3>
+                </div>
+                <p className="flow-section-hint">
+                  Weighted contribution of each category to your final score.
                 </p>
                 <div className="breakdown">
-                  <ProgressBar
-                    label="Project quality"
-                    value={weightedScoreBreakdown.projectQualityPoints}
-                    max={30}
-                    weighted
-                    color="var(--accent-primary)"
-                  />
-                  <ProgressBar
-                    label="Technology variety"
-                    value={weightedScoreBreakdown.technicalBreadthPoints}
-                    max={20}
-                    weighted
-                    color="var(--accent-primary)"
-                  />
-                  <ProgressBar
-                    label="README & documentation"
-                    value={weightedScoreBreakdown.documentationPoints}
-                    max={20}
-                    weighted
-                    color="var(--accent-primary)"
-                  />
-                  <ProgressBar
-                    label="Original project work"
-                    value={weightedScoreBreakdown.originalityPoints}
-                    max={20}
-                    weighted
-                    color="var(--accent-primary)"
-                  />
-                  <ProgressBar
-                    label="Recent activity"
-                    value={weightedScoreBreakdown.activityPoints}
-                    max={10}
-                    weighted
-                    color="var(--accent-primary)"
-                  />
+                  <ProgressBar label="Project quality" value={weightedScoreBreakdown.projectQualityPoints} max={30} weighted color="var(--flow-trim)" />
+                  <ProgressBar label="Technology variety" value={weightedScoreBreakdown.technicalBreadthPoints} max={20} weighted color="var(--flow-trim)" />
+                  <ProgressBar label="README & documentation" value={weightedScoreBreakdown.documentationPoints} max={20} weighted color="var(--flow-trim)" />
+                  <ProgressBar label="Original project work" value={weightedScoreBreakdown.originalityPoints} max={20} weighted color="var(--flow-trim)" />
+                  <ProgressBar label="Recent activity" value={weightedScoreBreakdown.activityPoints} max={10} weighted color="var(--flow-trim)" />
                 </div>
-                <div className="weighted-total">
+                <div className="weighted-total flow-weighted-total">
                   Final score: <strong>{weightedScoreBreakdown.totalPoints}</strong>/100
                 </div>
               </div>
-            </div>
+            </section>
           </RevealSection>
         </div>
       </section>
 
-      {/* Repositories */}
       <section id="section-repositories" className="report-section-anchor">
         <RevealSection delay={36}>
-          <div className="card card-repositories-suite">
-            <SectionHeading
-              icon={FolderGit2}
-              tone="violet"
-              title="Repositories Reviewed"
-              titleClassName="card-title--lead"
-            />
+          <section className="flow-doc flow-doc--analyzer flow-section" aria-labelledby="repos-heading">
+            <div className="flow-section-head">
+              <span className="flow-section-icon" aria-hidden>
+                <FolderGit2 size={16} strokeWidth={1.75} />
+              </span>
+              <div>
+                <span className="flow-section-eyebrow">Repositories</span>
+                <h2 id="repos-heading" className="flow-section-title">Repositories reviewed</h2>
+              </div>
+            </div>
             {spotlightRepo ? (
-              <div className="repo-feature-frame">
-                <p className="repo-feature-kicker">Best Portfolio Repo</p>
+              <div className="flow-repo-spotlight">
+                <p className="flow-row-label">Best portfolio repo</p>
                 {featuredRepoReason ? (
-                  <p className="repo-feature-reason">{featuredRepoReason}</p>
+                  <p className="flow-section-hint flow-repo-reason">{featuredRepoReason}</p>
                 ) : null}
-                <RevealSection delay={20}>
-                  <RepoCard repo={spotlightRepo} />
-                </RevealSection>
+                <RepoCard repo={spotlightRepo} />
               </div>
             ) : null}
             {otherRepos.length > 0 ? (
@@ -283,56 +254,60 @@ export default function AnalysisReport({ data }) {
             {repos.length === 0 ? (
               <p className="text-muted">No repositories found.</p>
             ) : null}
-          </div>
+          </section>
         </RevealSection>
       </section>
 
-      {/* Insights */}
       <section id="section-insights" className="report-section-anchor">
         <RevealSection delay={40}>
-          <div className="card insights-duo-card">
-            <SectionHeading icon={Radar} tone="violet" title="Strengths & Areas to Improve" titleClassName="card-title--lead" />
-            <div className="insights-duo-grid">
-              <div className="insights-duo-col">
-                <p className="insights-col-label">What Looks Strong</p>
-                <ul className="signal-list">
-                  {technicalHighlights.length > 0 ? (
-                    technicalHighlights.map((h, i) => (
-                      <li key={i} className="signal-item signal-item--positive">{h}</li>
-                    ))
-                  ) : (
-                    <li className="signal-item signal-muted">Nothing stood out in this pass—check the suggestions on the right.</li>
-                  )}
-                </ul>
-              </div>
-              <div className="insights-duo-col insights-duo-col--rule">
-                <p className="insights-col-label">What To Improve</p>
-                <ul className="signal-list">
-                  {growthAreas.length > 0 ? (
-                    growthAreas.map((a, i) => (
-                      <li key={i} className="signal-item signal-item--watch">{a}</li>
-                    ))
-                  ) : (
-                    <li className="signal-item signal-muted">No major gaps flagged—nice work.</li>
-                  )}
-                </ul>
+          <section className="flow-doc flow-doc--analyzer flow-section flow-section--split" aria-labelledby="insights-heading">
+            <div className="flow-section-head flow-section-head--full">
+              <span className="flow-section-icon" aria-hidden>
+                <Activity size={16} strokeWidth={1.75} />
+              </span>
+              <div>
+                <span className="flow-section-eyebrow">Insights</span>
+                <h2 id="insights-heading" className="flow-section-title">Strengths & areas to improve</h2>
               </div>
             </div>
-          </div>
+            <div className="flow-split-col">
+              <p className="flow-row-label">What looks strong</p>
+              <ul className="signal-list flow-signal-list">
+                {technicalHighlights.length > 0 ? (
+                  technicalHighlights.map((h, i) => (
+                    <li key={i} className="signal-item signal-item--positive">{h}</li>
+                  ))
+                ) : (
+                  <li className="signal-item signal-muted">Nothing stood out in this pass.</li>
+                )}
+              </ul>
+            </div>
+            <div className="flow-split-col">
+              <p className="flow-row-label">What to improve</p>
+              <ul className="signal-list flow-signal-list">
+                {growthAreas.length > 0 ? (
+                  growthAreas.map((a, i) => (
+                    <li key={i} className="signal-item signal-item--watch">{a}</li>
+                  ))
+                ) : (
+                  <li className="signal-item signal-muted">No major gaps flagged.</li>
+                )}
+              </ul>
+            </div>
+          </section>
         </RevealSection>
       </section>
-
     </div>
   )
 }
 
 function Stat({ label, value, suffix = '' }) {
   return (
-    <div className="pstat">
-      <span className="pstat-value">
+    <div className="flow-metric">
+      <span className="flow-metric-value">
         {typeof value === 'number' ? value.toLocaleString() : value}{suffix}
       </span>
-      <span className="pstat-label">{label}</span>
+      <span className="flow-metric-label">{label}</span>
     </div>
   )
 }

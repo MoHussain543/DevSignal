@@ -99,7 +99,7 @@ export default function RoadmapEntryPage() {
                 </form>
 
                 <p className="roadmap-entry-note">
-                  No account needed. Reads public data only.
+                  Sign in required. Reads public GitHub data only.
                 </p>
               </div>
             </div>

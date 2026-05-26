@@ -24,10 +24,38 @@ export default function App() {
           )}
         />
         <Route path="/report/:username"      element={<ReportPage />} />
-        <Route path="/ai-report"             element={<AiReportEntryPage />} />
-        <Route path="/ai-report/:username"   element={<AiReportResultPage />} />
-        <Route path="/roadmap"               element={<RoadmapEntryPage />} />
-        <Route path="/roadmap/:username"     element={<RoadmapResultPage />} />
+        <Route
+          path="/ai-report"
+          element={(
+            <ProtectedRoute>
+              <AiReportEntryPage />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/ai-report/:username"
+          element={(
+            <ProtectedRoute>
+              <AiReportResultPage />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/roadmap"
+          element={(
+            <ProtectedRoute>
+              <RoadmapEntryPage />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/roadmap/:username"
+          element={(
+            <ProtectedRoute>
+              <RoadmapResultPage />
+            </ProtectedRoute>
+          )}
+        />
       </Routes>
     </BrowserRouter>
   )

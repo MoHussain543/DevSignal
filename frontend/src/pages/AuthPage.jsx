@@ -30,9 +30,9 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      navigate('/me', { replace: true })
+      navigate(redirectPath, { replace: true })
     }
-  }, [isAuthenticated, navigate, user])
+  }, [isAuthenticated, navigate, redirectPath, user])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -56,7 +56,7 @@ export default function AuthPage() {
 
         if (data.session) {
           setMessage('Account created. You are signed in now.')
-          navigate('/me', { replace: true })
+          navigate(redirectPath, { replace: true })
         } else {
           setMessage('Account created. Check your email if confirmation is enabled.')
         }

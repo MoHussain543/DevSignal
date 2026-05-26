@@ -42,7 +42,6 @@ export default function RepoCard({ repo }) {
     fork, likelyDemoRepo, recentlyUpdated,
     repoQualitySignal,
     repoScore,
-    repoMetadataScore = repoScore,
     repoSignals,
     readmeAnalysis: r,
   } = repo
@@ -87,12 +86,7 @@ export default function RepoCard({ repo }) {
       </div>
 
       <div className="repo-score-row">
-        <span
-          className="repo-score-label"
-          title="Blends what’s visible on GitHub (metadata) with part of our README checklist. The README & documentation section averages README quality across your portfolio."
-        >
-          Score
-        </span>
+        <span className="repo-score-label">Score</span>
         <div className="repo-score-track repo-score-track-strong">
           <div
             className="repo-score-fill"
@@ -100,9 +94,6 @@ export default function RepoCard({ repo }) {
           />
         </div>
         <span className="repo-score-val" style={{ color: scoreCol }}>{repoScore}</span>
-        <span className="repo-meta-score-hint" title="Quality from GitHub metadata only (used in the project-quality part of your overall score).">
-          · metadata {repoMetadataScore}
-        </span>
       </div>
 
       <div className="readme-section">

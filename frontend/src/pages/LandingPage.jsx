@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar.jsx'
 import LandingSections from '../components/LandingSections.jsx'
+import DevSignalLogo from '../components/DevSignalLogo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 export default function LandingPage() {
@@ -18,6 +19,7 @@ export default function LandingPage() {
       <div className="main-area">
         <header className="site-header site-header--minimal">
           <Link to="/" className="header-brand-link">
+            <DevSignalLogo size="sm" />
             <span className="header-brand">DevSignal</span>
           </Link>
           <div className="header-sep" />

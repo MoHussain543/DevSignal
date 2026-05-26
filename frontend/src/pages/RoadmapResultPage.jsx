@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import {
-  ArrowRight,
   BookOpen,
   CalendarDays,
   CheckCircle2,
@@ -68,21 +67,118 @@ function LoadingState({ username }) {
   )
 }
 
-function RoadmapSection({ eyebrow, title, icon: Icon, children, variant }) {
+function RoadmapSection({ eyebrow, title, icon: Icon, children }) {
   return (
-    <div className={`roadmap-section roadmap-section--${variant}`}>
-      <div className="roadmap-section-header">
-        <span className={`roadmap-section-icon section-icon-slot section-icon-tone-${variant === 'warm' ? 'warm' : variant === 'pos' ? 'pos' : 'roadmap'}`} aria-hidden>
-          <Icon size={17} strokeWidth={1.75} />
+    <section className="flow-section">
+      <div className="flow-section-head">
+        <span className="flow-section-icon flow-section-icon--trim" aria-hidden>
+          <Icon size={16} strokeWidth={1.75} />
         </span>
         <div>
-          {eyebrow && <span className="roadmap-section-eyebrow">{eyebrow}</span>}
-          <h2 className="roadmap-section-title">{title}</h2>
+          {eyebrow ? <span className="flow-section-eyebrow">{eyebrow}</span> : null}
+          <h2 className="flow-section-title">{title}</h2>
         </div>
       </div>
-      <div className="roadmap-section-body">
+      <div className="flow-section-body">
         {children}
       </div>
+    </section>
+  )
+}
+
+function QuickWinStep({ step, action, why }) {
+  return (
+    <article className="pattern-win-step">
+      <span className="pattern-win-step-num">{step}</span>
+      <div className="pattern-win-step-body">
+        <p className="pattern-win-step-action">{action}</p>
+        {why ? <p className="pattern-win-step-why">{why}</p> : null}
+      </div>
+    </article>
+  )
+}
+
+function SkillCard({ skill, why, evidenceMissing, howToShow }) {
+  return (
+    <article className="pattern-skill-card">
+      <span className="pattern-skill-badge">{skill}</span>
+      <p className="pattern-skill-why">{why}</p>
+      <div className="pattern-skill-meta-grid">
+        {evidenceMissing ? (
+          <div className="pattern-skill-meta">
+            <span className="pattern-skill-meta-label">Missing evidence</span>
+            <p>{evidenceMissing}</p>
+          </div>
+        ) : null}
+        {howToShow ? (
+          <div className="pattern-skill-meta">
+            <span className="pattern-skill-meta-label">How to show it</span>
+            <p>{howToShow}</p>
+          </div>
+        ) : null}
+      </div>
+    </article>
+  )
+}
+
+function ProjectSpotlight({ name, whyItFits, skillsItProves, coreFeatures, whatMakesItImpressive }) {
+  return (
+    <article className="pattern-project-card">
+      <h3 className="pattern-project-name">{name}</h3>
+      <p className="pattern-project-fit">{whyItFits}</p>
+      {skillsItProves ? (
+        <div className="pattern-project-tags">
+          {(typeof skillsItProves === 'string'
+            ? skillsItProves.split(/[,·|/]+/)
+            : [String(skillsItProves)]
+          ).map((tag) => tag.trim()).filter(Boolean).map((tag) => (
+            <span key={tag} className="pattern-project-tag">{tag}</span>
+          ))}
+        </div>
+      ) : null}
+      <dl className="pattern-project-details">
+        {coreFeatures ? (
+          <>
+            <dt>What to build</dt>
+            <dd>{coreFeatures}</dd>
+          </>
+        ) : null}
+        {whatMakesItImpressive ? (
+          <>
+            <dt>What makes it impressive</dt>
+            <dd>{whatMakesItImpressive}</dd>
+          </>
+        ) : null}
+      </dl>
+    </article>
+  )
+}
+
+function PhaseStep({ marker, label, body }) {
+  return (
+    <div className="pattern-phase-step">
+      <span className="pattern-phase-marker">{marker}</span>
+      <div className="pattern-phase-body">
+        <span className="pattern-phase-label">{label}</span>
+        <p className="pattern-phase-text">{body}</p>
+      </div>
+    </div>
+  )
+}
+
+function GuidanceLane({ title, items, icon: Icon, variant }) {
+  if (!items?.length) return null
+  return (
+    <div className={`pattern-guidance-lane pattern-guidance-lane--${variant}`}>
+      <h3 className="pattern-guidance-lane-head">
+        <Icon size={14} strokeWidth={2} aria-hidden />
+        {title}
+      </h3>
+      <ul className="pattern-guidance-list">
+        {items.map((item, i) => (
+          <li key={i}>{item}</li>
+        ))}
+      </ul>
     </div>
   )
 }
@@ -290,207 +386,130 @@ export default function RoadmapResultPage() {
                       </Link>
                     </div>
                   ) : (
-                    <div className="roadmap-result-body">
+                    <div className="flow-doc flow-doc--roadmap roadmap-result-body pattern-layout">
 
-                      {/* 1. Roadmap Summary */}
                       {roadmap.roadmapSummary && (
-                        <div className="roadmap-summary-block">
-                          <div className="roadmap-summary-eyebrow">
-                            <Map size={13} strokeWidth={1.8} aria-hidden />
-                            Roadmap Summary
+                        <section className="flow-section flow-section--opening pattern-hero-callout">
+                          <div className="flow-section-head">
+                            <span className="flow-section-icon" aria-hidden>
+                              <Map size={16} strokeWidth={1.75} />
+                            </span>
+                            <div>
+                              <span className="flow-section-eyebrow">Overview</span>
+                              <h2 className="flow-section-title">Roadmap summary</h2>
+                            </div>
                           </div>
-                          <p className="roadmap-summary-text">{roadmap.roadmapSummary}</p>
-                        </div>
+                          <p className="pattern-hero-callout-text">{roadmap.roadmapSummary}</p>
+                        </section>
                       )}
 
-                      {/* 2. Quick Wins */}
                       {roadmap.quickWins?.length > 0 && (
-                        <RoadmapSection
-                          eyebrow="Week 1"
-                          title="Quick Wins"
-                          icon={Zap}
-                          variant="warm"
-                        >
-                          <div className="roadmap-quick-wins">
+                        <RoadmapSection eyebrow="Week 1" title="Quick wins" icon={Zap}>
+                          <div className="pattern-win-runway">
                             {roadmap.quickWins.map((win, i) => (
-                              <div key={i} className="roadmap-quick-win-item">
-                                <span className="roadmap-quick-win-num" aria-hidden>{i + 1}</span>
-                                <div className="roadmap-quick-win-content">
-                                  <p className="roadmap-quick-win-action">{win.action}</p>
-                                  <p className="roadmap-quick-win-why">{win.why}</p>
-                                </div>
-                              </div>
+                              <QuickWinStep key={i} step={i + 1} action={win.action} why={win.why} />
                             ))}
                           </div>
                         </RoadmapSection>
                       )}
 
-                      {/* 3. Skills to Learn Next */}
                       {roadmap.skillsToLearnNext?.length > 0 && (
-                        <RoadmapSection
-                          eyebrow="Skill Gaps"
-                          title="Skills to Learn Next"
-                          icon={BookOpen}
-                          variant="violet"
-                        >
-                          <div className="roadmap-skills-grid">
+                        <RoadmapSection eyebrow="Skill gaps" title="Skills to learn next" icon={BookOpen}>
+                          <div className="pattern-skill-grid">
                             {roadmap.skillsToLearnNext.map((skill, i) => (
-                              <div key={i} className="roadmap-skill-card">
-                                <div className="roadmap-skill-name">{skill.skill}</div>
-                                <p className="roadmap-skill-why">{skill.why}</p>
-                                <div className="roadmap-skill-meta">
-                                  <div className="roadmap-skill-meta-row">
-                                    <span className="roadmap-skill-meta-label">Missing evidence</span>
-                                    <p className="roadmap-skill-meta-text">{skill.evidenceMissing}</p>
-                                  </div>
-                                  <div className="roadmap-skill-meta-row">
-                                    <span className="roadmap-skill-meta-label">How to show it</span>
-                                    <p className="roadmap-skill-meta-text roadmap-skill-meta-text--action">{skill.howToShow}</p>
-                                  </div>
-                                </div>
-                              </div>
+                              <SkillCard
+                                key={i}
+                                skill={skill.skill}
+                                why={skill.why}
+                                evidenceMissing={skill.evidenceMissing}
+                                howToShow={skill.howToShow}
+                              />
                             ))}
                           </div>
                         </RoadmapSection>
                       )}
 
-                      {/* 4. Next Project Direction */}
                       {roadmap.nextProjectDirection?.length > 0 && (
-                        <RoadmapSection
-                          eyebrow="Project Direction"
-                          title="Next Project Ideas"
-                          icon={Lightbulb}
-                          variant="mag"
-                        >
-                          <div className="roadmap-projects-list">
+                        <RoadmapSection eyebrow="Project direction" title="Next project ideas" icon={Lightbulb}>
+                          <div className="pattern-project-grid">
                             {roadmap.nextProjectDirection.map((project, i) => (
-                              <div key={i} className="roadmap-project-card">
-                                <div className="roadmap-project-header">
-                                  <span className="roadmap-project-num" aria-hidden>{String.fromCharCode(65 + i)}</span>
-                                  <h3 className="roadmap-project-name">{project.projectName}</h3>
-                                </div>
-                                <p className="roadmap-project-why">{project.whyItFits}</p>
-                                <div className="roadmap-project-details">
-                                  <div className="roadmap-project-detail">
-                                    <span className="roadmap-project-detail-label">Skills it proves</span>
-                                    <p className="roadmap-project-detail-text">{project.skillsItProves}</p>
-                                  </div>
-                                  <div className="roadmap-project-detail">
-                                    <span className="roadmap-project-detail-label">What to build</span>
-                                    <p className="roadmap-project-detail-text">{project.coreFeatures}</p>
-                                  </div>
-                                  <div className="roadmap-project-detail roadmap-project-detail--standout">
-                                    <span className="roadmap-project-detail-label">What makes it impressive</span>
-                                    <p className="roadmap-project-detail-text">{project.whatMakesItImpressive}</p>
-                                  </div>
-                                </div>
-                              </div>
+                              <ProjectSpotlight
+                                key={i}
+                                name={project.projectName}
+                                whyItFits={project.whyItFits}
+                                skillsItProves={project.skillsItProves}
+                                coreFeatures={project.coreFeatures}
+                                whatMakesItImpressive={project.whatMakesItImpressive}
+                              />
                             ))}
                           </div>
                         </RoadmapSection>
                       )}
 
-                      {/* 5. Highest-Impact Change */}
                       {roadmap.highestImpactChange && (
-                        <div className="roadmap-impact-block">
-                          <div className="roadmap-impact-icon-wrap" aria-hidden>
-                            <Target size={18} strokeWidth={1.75} />
+                        <section className="flow-section pattern-unlock-banner">
+                          <div className="pattern-unlock-banner-inner">
+                            <span className="pattern-unlock-icon" aria-hidden>
+                              <Target size={20} strokeWidth={1.75} />
+                            </span>
+                            <div>
+                              <span className="flow-section-eyebrow">Highest impact</span>
+                              <h2 className="flow-section-title">One change that matters most</h2>
+                              <p className="pattern-unlock-text">{roadmap.highestImpactChange}</p>
+                            </div>
                           </div>
-                          <div>
-                            <div className="roadmap-impact-label">Highest-Impact Change</div>
-                            <p className="roadmap-impact-text">{roadmap.highestImpactChange}</p>
-                          </div>
-                        </div>
+                        </section>
                       )}
 
-                      {/* 6. 3-Month Plan */}
                       {(roadmap.monthOnePlan || roadmap.monthTwoPlan || roadmap.monthThreePlan) && (
-                        <RoadmapSection
-                          eyebrow="Implementation Plan"
-                          title="3-Month Roadmap"
-                          icon={CalendarDays}
-                          variant="violet"
-                        >
-                          <div className="roadmap-months">
+                        <RoadmapSection eyebrow="Implementation plan" title="3-month roadmap" icon={CalendarDays}>
+                          <div className="pattern-phase-pipeline">
+                            <svg className="pattern-phase-pipeline-line" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden>
+                              <path d="M 20 12 L 980 12" />
+                            </svg>
                             {roadmap.monthOnePlan && (
-                              <div className="roadmap-month">
-                                <div className="roadmap-month-header roadmap-month-header--one">
-                                  <span className="roadmap-month-num">Month 1</span>
-                                  <span className="roadmap-month-theme">Clean &amp; Clarify</span>
-                                </div>
-                                <p className="roadmap-month-text">{roadmap.monthOnePlan}</p>
-                              </div>
+                              <PhaseStep
+                                marker="M1"
+                                label="Month 1 · Clean & clarify"
+                                body={roadmap.monthOnePlan}
+                              />
                             )}
                             {roadmap.monthTwoPlan && (
-                              <div className="roadmap-month">
-                                <div className="roadmap-month-header roadmap-month-header--two">
-                                  <span className="roadmap-month-num">Month 2</span>
-                                  <span className="roadmap-month-theme">Build or Upgrade</span>
-                                </div>
-                                <p className="roadmap-month-text">{roadmap.monthTwoPlan}</p>
-                              </div>
+                              <PhaseStep
+                                marker="M2"
+                                label="Month 2 · Build or upgrade"
+                                body={roadmap.monthTwoPlan}
+                              />
                             )}
                             {roadmap.monthThreePlan && (
-                              <div className="roadmap-month">
-                                <div className="roadmap-month-header roadmap-month-header--three">
-                                  <span className="roadmap-month-num">Month 3</span>
-                                  <span className="roadmap-month-theme">Polish &amp; Present</span>
-                                </div>
-                                <p className="roadmap-month-text">{roadmap.monthThreePlan}</p>
-                              </div>
+                              <PhaseStep
+                                marker="M3"
+                                label="Month 3 · Polish & present"
+                                body={roadmap.monthThreePlan}
+                              />
                             )}
                           </div>
                         </RoadmapSection>
                       )}
 
-                      {/* 7. Expected Outcome */}
                       {roadmap.expectedOutcome && (
-                        <RoadmapSection
-                          eyebrow="After the Roadmap"
-                          title="Expected Outcome"
-                          icon={TrendingUp}
-                          variant="pos"
-                        >
-                          <p className="roadmap-outcome-text">{roadmap.expectedOutcome}</p>
-                        </RoadmapSection>
+                        <section className="flow-section pattern-outcome-strip">
+                          <span className="pattern-outcome-icon" aria-hidden>
+                            <TrendingUp size={18} strokeWidth={1.75} />
+                          </span>
+                          <div>
+                            <span className="flow-section-eyebrow">After the roadmap</span>
+                            <h2 className="flow-section-title">Expected outcome</h2>
+                            <p className="pattern-outcome-text">{roadmap.expectedOutcome}</p>
+                          </div>
+                        </section>
                       )}
 
-                      {/* 8. Do / Avoid */}
                       {(roadmap.doList?.length > 0 || roadmap.avoidList?.length > 0) && (
-                        <div className="roadmap-do-avoid-row">
-                          {roadmap.doList?.length > 0 && (
-                            <div className="roadmap-do-avoid-card roadmap-do-avoid-card--do">
-                              <div className="roadmap-do-avoid-header">
-                                <CheckCircle2 size={15} strokeWidth={2} aria-hidden />
-                                Do
-                              </div>
-                              <ul className="roadmap-do-avoid-list">
-                                {roadmap.doList.map((item, i) => (
-                                  <li key={i}>
-                                    <ArrowRight size={11} strokeWidth={2} aria-hidden />
-                                    {item}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          {roadmap.avoidList?.length > 0 && (
-                            <div className="roadmap-do-avoid-card roadmap-do-avoid-card--avoid">
-                              <div className="roadmap-do-avoid-header">
-                                <XCircle size={15} strokeWidth={2} aria-hidden />
-                                Avoid
-                              </div>
-                              <ul className="roadmap-do-avoid-list">
-                                {roadmap.avoidList.map((item, i) => (
-                                  <li key={i}>
-                                    <ArrowRight size={11} strokeWidth={2} aria-hidden />
-                                    {item}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
+                        <section className="flow-section pattern-guidance-board">
+                          <GuidanceLane title="Do" items={roadmap.doList} icon={CheckCircle2} variant="do" />
+                          <GuidanceLane title="Avoid" items={roadmap.avoidList} icon={XCircle} variant="avoid" />
+                        </section>
                       )}
 
                       <p className="ai-result-footnote">
