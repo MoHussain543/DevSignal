@@ -181,6 +181,34 @@ Runs on:
 
 - `http://localhost:8080`
 
+## Testing And Quality Checks
+
+### Frontend checks
+
+From `frontend/`:
+
+```bash
+npm run lint
+npm run build
+npm run test:e2e
+```
+
+These cover:
+
+- ESLint checks for the React/Vite frontend
+- production build validation
+- Playwright end-to-end coverage for key landing/auth flows
+
+### Backend checks
+
+From `backend/`:
+
+```bash
+./mvnw test
+```
+
+This runs the Spring Boot test suite used by backend CI.
+
 ## Docker
 
 The backend is containerized and can be built directly through Docker.
@@ -222,22 +250,49 @@ docker compose up --build
 
 ## CI/CD
 
-This repo includes GitHub Actions workflows for:
+This repo uses GitHub Actions for CI/CD and AWS managed services for hosting.
+
+### Frontend delivery model
+
+- GitHub Actions handles **frontend CI**
+- AWS Amplify handles **frontend deployment**
+- pushes to the connected branch trigger Amplify rebuilds and redeploys automatically
+
+### Backend delivery model
+
+- GitHub Actions handles **backend CI**
+- GitHub Actions also handles **backend deployment**
+- the deploy workflow builds a Docker image, pushes it to ECR, and forces ECS to roll out the new container version
+
+### Workflow summary
+
+This repo includes three GitHub Actions workflows:
 
 - **Frontend CI**
   - installs frontend dependencies
+  - runs ESLint
   - runs the production frontend build
+  - runs Playwright end-to-end tests after the build job succeeds
+  - uses concurrency groups to cancel superseded runs on the same branch
 
 - **Backend CI**
   - sets up Java 21
-  - compiles the backend with Maven
+  - runs the backend Maven test suite
+  - uses concurrency groups to cancel superseded runs on the same branch
 
 - **Backend CD**
   - runs after backend CI passes on `main`
   - authenticates to AWS
   - builds the backend Docker image for `linux/amd64`
-  - pushes the image to ECR
+  - pushes both a commit-based image tag and `latest` to ECR
   - forces a new ECS deployment
+
+### Current GitHub Actions behavior
+
+- pull requests run CI checks before merge
+- pushes to `main` run CI again
+- successful backend CI on `main` triggers automated ECS deployment
+- frontend deploys stay managed by Amplify instead of a custom GitHub Actions deploy job
 
 Current workflow files:
 
