@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LockKeyhole, Mail, Sparkles } from 'lucide-react'
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 import { supabase, supabaseConfigured } from '../lib/supabase.js'
 
 const BENEFITS = [

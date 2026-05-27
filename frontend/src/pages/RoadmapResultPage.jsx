@@ -17,7 +17,7 @@ import {
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
 import AnalyzeAnotherBar from '../components/AnalyzeAnotherBar.jsx'
 import ReportPageFooter from '../components/ReportPageFooter.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 import { apiBaseUrl, apiUrl, readApiError } from '../lib/api.js'
 
 const ROADMAP_LOADING_MESSAGES = [

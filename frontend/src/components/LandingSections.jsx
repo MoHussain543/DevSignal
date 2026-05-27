@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import RevealSection from './RevealSection.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 import {
   Activity,
   AlertTriangle,

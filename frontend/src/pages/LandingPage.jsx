@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar.jsx'
 import LandingSections from '../components/LandingSections.jsx'
 import DevSignalLogo from '../components/DevSignalLogo.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 
 export default function LandingPage() {
   const navigate = useNavigate()

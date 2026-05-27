@@ -14,7 +14,7 @@ import {
   UserCircle2,
 } from 'lucide-react'
 import MinimalSiteHeader from '../components/MinimalSiteHeader.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 import { supabase, supabaseConfigured } from '../lib/supabase.js'
 
 function normalizeUsername(value) {

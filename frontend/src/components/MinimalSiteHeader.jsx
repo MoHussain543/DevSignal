@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import DevSignalLogo from './DevSignalLogo.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/useAuth.js'
 
 /** DevSignal brand only — used on report flows without top nav clutter. */
 export default function MinimalSiteHeader() {
