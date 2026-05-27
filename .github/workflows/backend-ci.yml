@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  compile:
+  test:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,5 +39,5 @@ jobs:
       - name: Ensure Maven wrapper is executable
         run: chmod +x mvnw
 
-      - name: Compile backend
-        run: ./mvnw -q -DskipTests compile
+      - name: Run backend tests
+        run: ./mvnw test
